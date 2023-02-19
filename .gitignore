@@ -1,0 +1,9 @@
+### General ###
+out/**
+target/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

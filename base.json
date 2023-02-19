@@ -1,0 +1,8 @@
+{
+  "$data":{
+    "$integer": "1",
+    "$string": "empty 1",
+    "$boolean": true
+  },
+  "$steps": [0]
+}

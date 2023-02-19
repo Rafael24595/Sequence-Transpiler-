@@ -1,0 +1,15 @@
+FIELD $data MUTATE OBJECT
+	FIELD $integer INCREMENT 11
+	FIELD $string MUTATE "cadena 1"
+	FIELD $boolean MUTATE false
+CLOSE
+FIELD $steps MUTATE LIST
+	10 11 12 13
+CLOSE
+FIELD $test AS OBJECT
+	FIELD $sub-test AS OBJECT
+		FIELD $integer_2 AS 12
+		FIELD $string_2 AS "cadena 2"
+		FIELD $boolean_2 AS true
+	CLOSE
+CLOSE
