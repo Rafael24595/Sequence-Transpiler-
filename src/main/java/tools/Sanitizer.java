@@ -2,7 +2,7 @@ package tools;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static sequence.KSequence.*;
+import static sequence.sentence.KSentence.*;
 
 public class Sanitizer {
 

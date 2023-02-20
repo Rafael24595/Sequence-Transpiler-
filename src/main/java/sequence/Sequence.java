@@ -1,25 +1,25 @@
 package sequence;
 
-import com.google.gson.JsonElement;
-import sequence.objects.ISequenceObject;
-import static sequence.KSequence.*;
+import sequence.sentence.ISentence;
+
+import static sequence.sentence.KSentence.*;
 
 public class Sequence {
 
     private final String input;
-    private final JsonElement jsonObject;
+    private final ISentence<?> sentenceBase;
 
-    public Sequence(String input, JsonElement jsonObject ){
+    public Sequence(String input, ISentence<?> sentence){
         this.input = input;
-        this.jsonObject = jsonObject;
+        this.sentenceBase = sentence;
     }
 
-    public void build(ISequenceObject<?> object) {
+    public void build(ISentence<?> sentence) {
         String[] commands = input.split(SEPARATOR);
         int pointer = 0;
 
         while(pointer < commands.length){
-            pointer = object.evaluate(input, pointer, jsonObject);
+            pointer = sentence.evaluate(input, pointer, sentenceBase);
             pointer++;
         }
     }

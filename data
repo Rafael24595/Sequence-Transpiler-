@@ -1,5 +1,5 @@
 FIELD $data MUTATE OBJECT
-	FIELD $integer INCREMENT 11
+	FIELD $integer INCREMENT 11.50
 	FIELD $string MUTATE "cadena 1"
 	FIELD $boolean MUTATE false
 CLOSE

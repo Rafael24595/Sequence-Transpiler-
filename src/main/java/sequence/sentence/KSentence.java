@@ -1,8 +1,8 @@
-package sequence;
+package sequence.sentence;
 
-public class KSequence {
+public class KSentence {
 
-    private KSequence(){
+    private KSentence(){
     }
 
     public static final String SEPARATOR = "\s";
@@ -12,6 +12,9 @@ public class KSequence {
     public static final String LIST = "LIST";
     public static final String CLOSE = "CLOSE";
     public static final String MUTATE = "MUTATE";
+
+    public static final String DELETE = "DELETE";
+
     public static final String AS = "AS";
     public static final String INCREMENT = "INCREMENT";
     public static final String DECREMENT = "DECREMENT";

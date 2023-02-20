@@ -1,14 +1,14 @@
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import sequence.objects.SequenceMap;
+import com.google.gson.Gson;
+import sequence.sentence.SentenceMap;
 import sequence.Sequence;
 import tools.Sanitizer;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Main {
 
-    static HashMap<String, Object> baseMap = new HashMap<>();
+    static Map<String, Object> updateMap = new HashMap<>();
 
     static String inputText = """
                 FIELD $data MUTATE OBJECT
@@ -18,6 +18,10 @@ public class Main {
                 CLOSE
                 FIELD $steps MUTATE LIST
                     10 11 12 13
+                CLOSE
+                FIELD $erase DELETE
+                FIELD multi_level_1 MUTATE OBJECT
+                    FIELD $integer_4 AS 4
                 CLOSE
                 FIELD $test AS OBJECT
                     FIELD $sub-test AS OBJECT
@@ -33,20 +37,32 @@ public class Main {
               "$data":{
                 "$integer": "1",
                 "$string": "empty 1",
-                "$boolean": true
+                "$boolean": true,
+                "test_new": "test_field_1"
               },
-              "$steps": [0]
+              "$steps": [0],
+              "$erase": "this_field_out",
+              "multi_level_1":{
+                "$integer_3": "3",
+                "multi_level_2": {
+                    "$string": "cadena 2"
+                }
+              }
             }
             """;
 
 
     public static void main(String[] args) {
         String input = Sanitizer.cleanInput(inputText);
-        JsonObject jsonObject = new JsonParser().parse(baseJson).getAsJsonObject();
 
-        Sequence s = new Sequence(input, jsonObject );
-        SequenceMap map = new SequenceMap(baseMap);
-        s.build(map);
+        updateMap = new Gson().fromJson(baseJson, HashMap.class);
+        Map<String, Object> baseMap = new HashMap<>(updateMap);
+
+        SentenceMap sentenceBase = new SentenceMap(baseMap);
+        SentenceMap sentenceUpdate = new SentenceMap(updateMap);
+
+        Sequence s = new Sequence(input, sentenceBase);
+        s.build(sentenceUpdate);
 
         System.out.println("Close app...");
     }
