@@ -12,47 +12,101 @@ import java.util.regex.Pattern;
 public abstract class ASentence<T> implements ISentence<T> {
 
     public int evaluate(String input, int pointer, ISentence<?> sentenceBase) {
+        String name = getName(input, pointer);
+        String action = getAction(input, pointer);
+
+        ISentence<?> sentenceChildBase = buildSentenceBase(input, pointer, sentenceBase);
+        ISentence<?> sentenceChildUpdated = buildSentenceUpdate(input, pointer, sentenceChildBase);
+
+        mergeValues(name, action, sentenceChildUpdated, sentenceChildBase);
+
+        return calculatePointer(input, pointer);
+    }
+
+    private ISentence<?> buildSentenceUpdate(String input, int pointer, ISentence<?> sentenceChildBase){
         String command = getCommand(input, pointer);
-
-        String name = "";
-        String action = "";
-
+        String type = getType(input, pointer);
+        
         ISentence<?> sentenceChildUpdated = new SentenceObject(command);
-        ISentence<?> sentenceChildBase = new SentenceObject("");
 
-        if(command.equals(FIELD)){
-            int keyPointer = pointer + 1;
-            int actionPointer = keyPointer + 1;
-            int typePointer = actionPointer + 1;
-
-            name = getCommand(input, keyPointer);
-            action = getCommand(input, actionPointer);
-            String type = getCommand(input, typePointer);
-
-            Object baseObjectChild = sentenceBase.getAttribute(name);
+        if(!isRawValue(command)){
 
             switch (type){
                 case OBJECT:
                     sentenceChildUpdated = new SentenceMap(new HashMap<>());
-                    sentenceChildBase = new SentenceMap((Map<String, Object>) baseObjectChild);
-                    pointer = buildComplexField(input, pointer, sentenceChildUpdated, sentenceChildBase);
+                    buildComplexField(input, pointer, sentenceChildUpdated, sentenceChildBase);
                     break;
                 case LIST:
                     sentenceChildUpdated = new SentenceList(new ArrayList<>());
-                    sentenceChildBase = new SentenceList((List<Object>) baseObjectChild);
-                    pointer = buildComplexField(input, pointer, sentenceChildUpdated, sentenceChildBase);
+                    buildComplexField(input, pointer, sentenceChildUpdated, sentenceChildBase);
                     break;
                 default:
                     sentenceChildUpdated = new SentenceObject(type);
-                    sentenceChildBase = new SentenceObject(baseObjectChild);
-                    pointer = action.equals(DELETE) ? actionPointer : typePointer;
                     break;
             }
+        } 
+        
+        return sentenceChildUpdated;
+    }
+
+    private ISentence<?> buildSentenceBase(String input, int pointer, ISentence<?> sentenceBase) {
+        String command = getCommand(input, pointer);
+        String name = getName(input, pointer);
+        String type = getType(input, pointer);
+
+        if(!isRawValue(command)){
+            Object baseObjectChild = sentenceBase.getAttribute(name);
+
+            switch (type){
+                case OBJECT:
+                    return new SentenceMap((Map<String, Object>) baseObjectChild);
+                case LIST:
+                    return new SentenceList((List<Object>) baseObjectChild);
+                default:
+                    return new SentenceObject(baseObjectChild);
+            }
+        } else {
+            return new SentenceObject("");
+        }
+    }
+
+    private String getName(String input, int pointer){
+        String command = getCommand(input, pointer);
+        String name = "";
+
+        if(!isRawValue(command)){
+            int keyPointer = pointer + 1;
+            name = getCommand(input, keyPointer);
         }
 
-        mergeValues(name, action, sentenceChildUpdated, sentenceChildBase);
+        return name;
+    }
 
-        return pointer;
+    private String getAction(String input, int pointer){
+        String command = getCommand(input, pointer);
+        String action = "";
+
+        if(!isRawValue(command)){
+            int keyPointer = pointer + 1;
+            int actionPointer = keyPointer + 1;
+            action = getCommand(input, actionPointer);
+        }
+
+        return action;
+    }
+
+    private String getType(String input, int pointer){
+        String command = getCommand(input, pointer);
+        String type = "";
+
+        if(!isRawValue(command)){
+            int keyPointer = pointer + 1;
+            int actionPointer = keyPointer + 1;
+            int typePointer = actionPointer + 1;
+            type = getCommand(input, typePointer);
+        }
+
+        return type;
     }
 
     private void mergeValues(String name, String action, ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
@@ -80,7 +134,6 @@ public abstract class ASentence<T> implements ISentence<T> {
                 addAttribute(name, sentenceUpdated.getObject());
                 break;
         }
-
     }
 
     private static void asValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) {
@@ -120,21 +173,62 @@ public abstract class ASentence<T> implements ISentence<T> {
         }
     }
 
-    private int buildComplexField(String input, int position, ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) {
+    private void buildComplexField(String input, int position, ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) {
         int keyPosition = position + 1;
         int actionPosition = keyPosition + 1;
         int typePosition = actionPosition + 1;
 
-        int closerClosePosition = findNextReference(input, keyPosition, CLOSE);
-        String fragmentPreview = splitFragment(input, typePosition, closerClosePosition);
-
-        int correctedClosePosition = correctClosePosition(input, fragmentPreview, closerClosePosition);
-        String fragment = splitFragment(input, typePosition, correctedClosePosition);
+        int closePointer = calculateComplexPointer(input, position);
+        String fragment = splitFragment(input, typePosition, closePointer);
 
         Sequence s = new Sequence(fragment, sentenceBase);
         s.build(sentenceUpdated);
+    }
 
-        return correctedClosePosition - 1;
+    private int calculatePointer(String input, int pointer) {
+        int keyPointer = pointer + 1;
+        int actionPointer = keyPointer + 1;
+        int typePointer = actionPointer + 1;
+
+        String action = getAction(input, pointer);
+        String type = getType(input, pointer);
+
+        String command = getCommand(input, pointer);
+
+        if(isRawValue(command)){
+            return pointer;
+        }
+        if(isDeclarationField(action)){
+            return actionPointer;
+        }
+        if(isComplexField(type)){
+            return calculateComplexPointer(input, pointer) -1;
+        }
+
+        return typePointer;
+    }
+
+    private boolean isRawValue(String command){
+        return !command.equals(FIELD);
+    }
+
+    private boolean isDeclarationField(String action){
+        return action.equals(DELETE);
+    }
+
+    private boolean isComplexField(String type){
+        return type.equals(OBJECT) || type.equals(LIST);
+    }
+
+    private int calculateComplexPointer(String input, int pointer){
+        int keyPointer = pointer + 1;
+        int actionPointer = keyPointer + 1;
+        int typePointer = actionPointer + 1;
+
+        int closerClosePosition = findNextReference(input, keyPointer, CLOSE);
+        String fragmentPreview = splitFragment(input, typePointer, closerClosePosition);
+
+        return correctClosePosition(input, fragmentPreview, closerClosePosition);
     }
 
     private int correctClosePosition(String input, String fragmentPreview, int closePosition){
