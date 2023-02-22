@@ -11,6 +11,11 @@ import java.util.regex.Pattern;
 
 public abstract class ASentence<T> implements ISentence<T> {
 
+    private static final int NAME_POINTER_CORRECTION = 1;
+    private static final int ACTION_POINTER_CORRECTION = 2;
+    private static final int TYPE_POINTER_CORRECTION = 3;
+    private static final int CLOSE_TAG_POINTER_CORRECTION = 1;
+
     protected SentenceMixer mixer;
 
     protected ASentence() {
@@ -37,66 +42,68 @@ public abstract class ASentence<T> implements ISentence<T> {
 
     private String getNameField(String input, int pointer){
         String command = getCommandField(input, pointer);
-        String name = "";
 
         if(!isRawValue(command)){
-            int keyPointer = pointer + 1;
-            name = getCommandField(input, keyPointer);
+            int keyPointer = pointer + NAME_POINTER_CORRECTION;
+            return getCommandField(input, keyPointer);
         }
 
-        return name;
+        return "";
     }
 
     private String getActionField(String input, int pointer){
         String command = getCommandField(input, pointer);
-        String action = "";
 
         if(!isRawValue(command)){
-            int keyPointer = pointer + 1;
-            int actionPointer = keyPointer + 1;
-            action = getCommandField(input, actionPointer);
+            int actionPointer = pointer + ACTION_POINTER_CORRECTION;
+            return getCommandField(input, actionPointer);
         }
 
-        return action;
+        return "";
     }
 
     private String getTypeField(String input, int pointer){
         String command = getCommandField(input, pointer);
-        String type = "";
 
         if(!isRawValue(command)){
-            int keyPointer = pointer + 1;
-            int actionPointer = keyPointer + 1;
-            int typePointer = actionPointer + 1;
-            type = getCommandField(input, typePointer);
+            int typePointer = pointer + TYPE_POINTER_CORRECTION;
+            return getCommandField(input, typePointer);
         }
 
-        return type;
+        return "";
     }
 
     private ISentence<?> buildSentenceUpdate(String input, int pointer, ISentence<?> sentenceBase){
         String command = getCommandField(input, pointer);
         String type = getTypeField(input, pointer);
         
-        ISentence<?> sentenceUpdated = new SentenceObject(command);
+        String field = type;
+        int fixedPointer = pointer;
 
-        if(!isRawValue(command)){
+        if(isRawValue(command)){
+            field = command;
+            fixedPointer = pointer - TYPE_POINTER_CORRECTION;
+        }
 
-            switch (type){
-                case OBJECT:
-                    sentenceUpdated = new SentenceMap(new HashMap<>());
-                    buildInnerSequence(input, pointer, sentenceUpdated, sentenceBase);
-                    break;
-                case LIST:
-                    sentenceUpdated = new SentenceList(new ArrayList<>());
-                    buildInnerSequence(input, pointer, sentenceUpdated, sentenceBase);
-                    break;
-                default:
-                    sentenceUpdated = new SentenceObject(type);
-                    break;
-            }
-        } 
-        
+        return fillbuildSentenceUpdate(field, input, fixedPointer, sentenceBase);
+    }
+
+    private ISentence<?> fillbuildSentenceUpdate(String field, String input, int pointer, ISentence<?> sentenceBase) {
+        ISentence<?> sentenceUpdated;
+
+        switch (field){
+            case OBJECT:
+                sentenceUpdated = new SentenceMap(new HashMap<>());
+                buildInnerSequence(input, pointer, sentenceUpdated, sentenceBase);
+                break;
+            case LIST:
+                sentenceUpdated = new SentenceList(new ArrayList<>());
+                buildInnerSequence(input, pointer, sentenceUpdated, sentenceBase);
+                break;
+            default:
+                sentenceUpdated = new SentenceObject(field);
+                break;
+        }
         return sentenceUpdated;
     }
 
@@ -106,37 +113,37 @@ public abstract class ASentence<T> implements ISentence<T> {
         String type = getTypeField(input, pointer);
 
         if(!isRawValue(command)){
-            Object baseObjectChild = sentenceBase.getAttribute(name);
+            return fillbuildSentenceBase(type, name, sentenceBase);
+        } else {
+            return fillbuildSentenceBase(command, name, sentenceBase);
+        }
+    }
 
-            switch (type){
+    private ISentence<?> fillbuildSentenceBase(String field,  String name, ISentence<?> sentenceBase){
+        Object baseObjectChild = sentenceBase.getAttribute(name);
+
+            switch (field){
                 case OBJECT:
                     try {
                         return new SentenceMap((Map<String, Object>) baseObjectChild);
                     } catch (Exception e) {
-                        throw new ClassCastException("Format error, Map type structure required, but \"" + baseObjectChild.getClass() + "\" found");
+                        throw new ClassCastException("Format error, Map type structure required, but \"" + baseObjectChild.getClass() + "\" obtained.");
                     }
                 case LIST:
                     try {
                         return new SentenceList((List<Object>) baseObjectChild);
                     } catch (Exception e) {
-                        throw new ClassCastException("Format error, List type structure required, but \"" + baseObjectChild.getClass() + "\" found");
+                        throw new ClassCastException("Format error, List type structure required, but \"" + baseObjectChild.getClass() + "\" obtained");
                     }
                 default:
                     return new SentenceObject(baseObjectChild);
             }
-        } else {
-            return new SentenceObject("");
-        }
     }
 
-    
+    private void buildInnerSequence(String input, int pointer, ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) {
+        int typePosition = pointer + TYPE_POINTER_CORRECTION;
 
-    private void buildInnerSequence(String input, int position, ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) {
-        int keyPosition = position + 1;
-        int actionPosition = keyPosition + 1;
-        int typePosition = actionPosition + 1;
-
-        int closePointer = calculateComplexPointer(input, position);
+        int closePointer = calculateComplexPointer(input, pointer);
         String fragment = splitFragment(input, typePosition, closePointer);
 
         Sequence sequence = new Sequence(fragment, sentenceBase);
@@ -144,9 +151,8 @@ public abstract class ASentence<T> implements ISentence<T> {
     }
 
     private int calculatePointer(String input, int pointer) {
-        int keyPointer = pointer + 1;
-        int actionPointer = keyPointer + 1;
-        int typePointer = actionPointer + 1;
+        int actionPointer = pointer + ACTION_POINTER_CORRECTION;
+        int typePointer = pointer + TYPE_POINTER_CORRECTION;
 
         String action = getActionField(input, pointer);
         String type = getTypeField(input, pointer);
@@ -154,13 +160,13 @@ public abstract class ASentence<T> implements ISentence<T> {
         String command = getCommandField(input, pointer);
 
         if(isRawValue(command)){
-            return pointer;
+            return isComplexField(command) ? calculateComplexPointerAcurate(input, pointer) : pointer;
         }
         if(isDeclarationField(action)){
             return actionPointer;
         }
-        if(isComplexField(type)){
-            return calculateComplexPointer(input, pointer) -1;
+        if(isComplexField(type) || isComplexField(command)){
+            return calculateComplexPointerAcurate(input, pointer);
         }
 
         return typePointer;
@@ -178,10 +184,13 @@ public abstract class ASentence<T> implements ISentence<T> {
         return type.equals(OBJECT) || type.equals(LIST);
     }
 
+    private int calculateComplexPointerAcurate(String input, int pointer){
+        return calculateComplexPointer(input, pointer) - CLOSE_TAG_POINTER_CORRECTION;
+    }
+
     private int calculateComplexPointer(String input, int pointer){
-        int keyPointer = pointer + 1;
-        int actionPointer = keyPointer + 1;
-        int typePointer = actionPointer + 1;
+        int keyPointer = pointer + NAME_POINTER_CORRECTION;
+        int typePointer = pointer + TYPE_POINTER_CORRECTION;
 
         int closerClosePosition = findNextReference(input, keyPointer, CLOSE);
         String fragmentPreview = splitFragment(input, typePointer, closerClosePosition);
