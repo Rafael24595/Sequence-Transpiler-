@@ -1,4 +1,4 @@
-package sequence.sentence;
+package sequence.sentence.sentence;
 
 public interface ISentence<T> {
     int evaluate(String input, int position, ISentence<?> object);

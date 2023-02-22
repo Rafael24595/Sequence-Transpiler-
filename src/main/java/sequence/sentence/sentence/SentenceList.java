@@ -1,4 +1,4 @@
-package sequence.sentence;
+package sequence.sentence.sentence;
 
 import java.util.ArrayList;
 import java.util.List;

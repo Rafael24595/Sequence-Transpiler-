@@ -1,8 +1,9 @@
-package sequence.sentence;
+package sequence.sentence.sentence;
 
 import static sequence.sentence.KSentence.*;
 
 import sequence.Sequence;
+import sequence.sentence.SentenceMixer;
 
 import java.util.*;
 import java.util.regex.Matcher;

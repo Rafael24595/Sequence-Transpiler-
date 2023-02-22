@@ -1,10 +1,10 @@
 import com.google.gson.Gson;
-import sequence.sentence.SentenceMap;
+
 import sequence.Sequence;
+import sequence.sentence.sentence.SentenceMap;
 import tools.Sanitizer;
 import java.util.HashMap;
 import java.util.Map;
-
 
 public class Main {
 

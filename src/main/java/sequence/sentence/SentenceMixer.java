@@ -1,8 +1,11 @@
 package sequence.sentence;
 
+import tools.Sanitizer;
 import tools.ValueParser;
 
 import static sequence.sentence.KSentence.*;
+
+import sequence.sentence.sentence.ISentence;
 
 public class SentenceMixer {
     
@@ -14,10 +17,6 @@ public class SentenceMixer {
 
     public void merge(String name, String action, ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
         switch (action){
-            case AS:
-                asValue(sentenceUpdated, sentenceBase);
-                sentenceReceptor.addAttribute(name, sentenceUpdated.getObject());
-                break;
             case MUTATE:
                 mutateValue(sentenceUpdated, sentenceBase);
                 sentenceReceptor.addAttribute(name, sentenceUpdated.getObject());
@@ -34,12 +33,32 @@ public class SentenceMixer {
                 sentenceReceptor.removeAttribute(name);
                 break;
             default:
+                asValue(sentenceUpdated, sentenceBase);
                 sentenceReceptor.addAttribute(name, sentenceUpdated.getObject());
                 break;
         }
     }
 
-    private static void asValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) {
+    private static void asValue(ISentence sentenceUpdated, ISentence<?> sentenceBase) {
+        Object valueObject = sentenceUpdated.getObject();
+        Object valueParsed;
+
+        if(ValueParser.isInteger(valueObject)) {
+            valueParsed = ValueParser.parseInteger(valueObject);
+            sentenceUpdated.setObject(valueParsed);
+        }
+        else if(ValueParser.isDouble(valueObject)){
+            valueParsed = ValueParser.parseDouble(valueObject);
+            sentenceUpdated.setObject(valueParsed);
+        }
+        else if(ValueParser.isBoolean(valueObject)){
+            valueParsed = ValueParser.parseBoolean(valueObject);
+            sentenceUpdated.setObject(valueParsed);
+        }
+        else if(ValueParser.isString(valueObject)){
+            valueParsed = Sanitizer.unBrickString((String) valueObject);
+            sentenceUpdated.setObject(valueParsed);
+        }
     }
 
     private static void mutateValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {

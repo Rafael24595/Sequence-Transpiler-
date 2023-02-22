@@ -16,7 +16,7 @@ public class Sanitizer {
         return input.replaceAll("\\s{2,}|\\n+|\\t+", SEPARATOR).trim();
     }
 
-    private static String brickString(String input){
+    public static String brickString(String input){
         Pattern p = Pattern.compile("\"([^\"]*)\"");
         Matcher m = p.matcher(input);
 
@@ -27,6 +27,11 @@ public class Sanitizer {
         }
 
         return input;
+    }
+
+    public static String unBrickString(String input){
+        input = input.replaceAll("^\"|\"$", "");
+        return input.replaceAll(SEPARATOR_AUX, SEPARATOR);
     }
 
 }

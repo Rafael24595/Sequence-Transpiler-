@@ -1,8 +1,8 @@
 package sequence;
 
-import sequence.sentence.ISentence;
-
 import static sequence.sentence.KSentence.*;
+
+import sequence.sentence.sentence.ISentence;
 
 public class Sequence {
 
