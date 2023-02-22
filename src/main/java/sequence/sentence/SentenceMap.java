@@ -8,6 +8,7 @@ public class SentenceMap extends ASentence<HashMap<String, Object>> {
     Map<String, Object> map;
 
     public SentenceMap(Map<String, Object> map){
+        super();
         this.map = map == null ? new HashMap<>() : map;
     }
 

@@ -5,6 +5,7 @@ public class SentenceObject extends ASentence<Object> {
     Object object;
 
     public SentenceObject(java.lang.Object object){
+        super();
         this.object = object;
     }
 

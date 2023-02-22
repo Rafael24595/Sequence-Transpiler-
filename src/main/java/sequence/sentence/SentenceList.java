@@ -7,7 +7,8 @@ public class SentenceList extends ASentence<List<Object>> {
 
     List<Object> list;
 
-    public SentenceList(List<Object> list){
+    public SentenceList(List<Object> list) {
+        super();
         this.list = list == null ? new ArrayList<>() : list;
     }
 

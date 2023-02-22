@@ -61,8 +61,8 @@ public class Main {
         SentenceMap sentenceBase = new SentenceMap(baseMap);
         SentenceMap sentenceUpdate = new SentenceMap(updateMap);
 
-        Sequence s = new Sequence(input, sentenceBase);
-        s.build(sentenceUpdate);
+        Sequence sequence = new Sequence(input, sentenceBase);
+        sequence.build(sentenceUpdate);
 
         System.out.println("Close app...");
     }

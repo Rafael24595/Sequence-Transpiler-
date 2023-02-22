@@ -3,7 +3,6 @@ package sequence.sentence;
 import static sequence.sentence.KSentence.*;
 
 import sequence.Sequence;
-import tools.ValueParser;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -11,57 +10,116 @@ import java.util.regex.Pattern;
 
 public abstract class ASentence<T> implements ISentence<T> {
 
+    protected SentenceMixer mixer;
+
+    protected ASentence() {
+        this.mixer = new SentenceMixer(this);
+    }
+
     public int evaluate(String input, int pointer, ISentence<?> sentenceBase) {
-        String name = getName(input, pointer);
-        String action = getAction(input, pointer);
+        String name = getNameField(input, pointer);
+        String action = getActionField(input, pointer);
 
         ISentence<?> sentenceChildBase = buildSentenceBase(input, pointer, sentenceBase);
         ISentence<?> sentenceChildUpdated = buildSentenceUpdate(input, pointer, sentenceChildBase);
 
-        mergeValues(name, action, sentenceChildUpdated, sentenceChildBase);
+        mixer.merge(name, action, sentenceChildUpdated, sentenceChildBase);
 
         return calculatePointer(input, pointer);
     }
 
-    private ISentence<?> buildSentenceUpdate(String input, int pointer, ISentence<?> sentenceChildBase){
-        String command = getCommand(input, pointer);
-        String type = getType(input, pointer);
+    protected String getCommandField(String input, int pointer){
+        String[] startCommands = input.split(SEPARATOR, pointer + 1);
+        String[] endCommands = startCommands[pointer].split(SEPARATOR, pointer + 2);
+        return endCommands[0];
+    }
+
+    private String getNameField(String input, int pointer){
+        String command = getCommandField(input, pointer);
+        String name = "";
+
+        if(!isRawValue(command)){
+            int keyPointer = pointer + 1;
+            name = getCommandField(input, keyPointer);
+        }
+
+        return name;
+    }
+
+    private String getActionField(String input, int pointer){
+        String command = getCommandField(input, pointer);
+        String action = "";
+
+        if(!isRawValue(command)){
+            int keyPointer = pointer + 1;
+            int actionPointer = keyPointer + 1;
+            action = getCommandField(input, actionPointer);
+        }
+
+        return action;
+    }
+
+    private String getTypeField(String input, int pointer){
+        String command = getCommandField(input, pointer);
+        String type = "";
+
+        if(!isRawValue(command)){
+            int keyPointer = pointer + 1;
+            int actionPointer = keyPointer + 1;
+            int typePointer = actionPointer + 1;
+            type = getCommandField(input, typePointer);
+        }
+
+        return type;
+    }
+
+    private ISentence<?> buildSentenceUpdate(String input, int pointer, ISentence<?> sentenceBase){
+        String command = getCommandField(input, pointer);
+        String type = getTypeField(input, pointer);
         
-        ISentence<?> sentenceChildUpdated = new SentenceObject(command);
+        ISentence<?> sentenceUpdated = new SentenceObject(command);
 
         if(!isRawValue(command)){
 
             switch (type){
                 case OBJECT:
-                    sentenceChildUpdated = new SentenceMap(new HashMap<>());
-                    buildComplexField(input, pointer, sentenceChildUpdated, sentenceChildBase);
+                    sentenceUpdated = new SentenceMap(new HashMap<>());
+                    buildInnerSequence(input, pointer, sentenceUpdated, sentenceBase);
                     break;
                 case LIST:
-                    sentenceChildUpdated = new SentenceList(new ArrayList<>());
-                    buildComplexField(input, pointer, sentenceChildUpdated, sentenceChildBase);
+                    sentenceUpdated = new SentenceList(new ArrayList<>());
+                    buildInnerSequence(input, pointer, sentenceUpdated, sentenceBase);
                     break;
                 default:
-                    sentenceChildUpdated = new SentenceObject(type);
+                    sentenceUpdated = new SentenceObject(type);
                     break;
             }
         } 
         
-        return sentenceChildUpdated;
+        return sentenceUpdated;
     }
 
     private ISentence<?> buildSentenceBase(String input, int pointer, ISentence<?> sentenceBase) {
-        String command = getCommand(input, pointer);
-        String name = getName(input, pointer);
-        String type = getType(input, pointer);
+        String command = getCommandField(input, pointer);
+        String name = getNameField(input, pointer);
+        String type = getTypeField(input, pointer);
 
         if(!isRawValue(command)){
             Object baseObjectChild = sentenceBase.getAttribute(name);
 
             switch (type){
                 case OBJECT:
-                    return new SentenceMap((Map<String, Object>) baseObjectChild);
+                    try {
+                        return new SentenceMap((Map<String, Object>) baseObjectChild);
+                    } catch (Exception e) {
+                        throw new ClassCastException("Format error, Map type structure required, but \"" + baseObjectChild.getClass() + "\" found");
+                    }
                 case LIST:
-                    return new SentenceList((List<Object>) baseObjectChild);
+                    try {
+                        return new SentenceList((List<Object>) baseObjectChild);
+                    } catch (Exception e) {
+                        throw new ClassCastException("Format error, List type structure required, but \"" + baseObjectChild.getClass() + "\" found");
+                    }
                 default:
                     return new SentenceObject(baseObjectChild);
             }
@@ -70,110 +128,9 @@ public abstract class ASentence<T> implements ISentence<T> {
         }
     }
 
-    private String getName(String input, int pointer){
-        String command = getCommand(input, pointer);
-        String name = "";
+    
 
-        if(!isRawValue(command)){
-            int keyPointer = pointer + 1;
-            name = getCommand(input, keyPointer);
-        }
-
-        return name;
-    }
-
-    private String getAction(String input, int pointer){
-        String command = getCommand(input, pointer);
-        String action = "";
-
-        if(!isRawValue(command)){
-            int keyPointer = pointer + 1;
-            int actionPointer = keyPointer + 1;
-            action = getCommand(input, actionPointer);
-        }
-
-        return action;
-    }
-
-    private String getType(String input, int pointer){
-        String command = getCommand(input, pointer);
-        String type = "";
-
-        if(!isRawValue(command)){
-            int keyPointer = pointer + 1;
-            int actionPointer = keyPointer + 1;
-            int typePointer = actionPointer + 1;
-            type = getCommand(input, typePointer);
-        }
-
-        return type;
-    }
-
-    private void mergeValues(String name, String action, ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
-        switch (action){
-            case AS:
-                asValue(sentenceUpdated, sentenceBase);
-                addAttribute(name, sentenceUpdated.getObject());
-                break;
-            case MUTATE:
-                mutateValue(sentenceUpdated, sentenceBase);
-                addAttribute(name, sentenceUpdated.getObject());
-                break;
-            case INCREMENT:
-                incrementValue(sentenceUpdated, sentenceBase);
-                addAttribute(name, sentenceUpdated.getObject());
-                break;
-            case DECREMENT:
-                decrementValue(sentenceUpdated, sentenceBase);
-                addAttribute(name, sentenceUpdated.getObject());
-                break;
-            case DELETE:
-                removeAttribute(name);
-                break;
-            default:
-                addAttribute(name, sentenceUpdated.getObject());
-                break;
-        }
-    }
-
-    private static void asValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) {
-    }
-
-    private static void mutateValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
-        if(sentenceBase == null)
-            throw new IllegalArgumentException("Field does not exists");
-        sentenceUpdated.merge(sentenceBase);
-        asValue(sentenceUpdated, sentenceBase);
-    }
-
-    private static void decrementValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
-        calculateValue(sentenceUpdated, sentenceBase, - 1);
-    }
-
-    private static void incrementValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
-        calculateValue(sentenceUpdated, sentenceBase, 1);
-    }
-
-    private static void calculateValue(ISentence sentenceUpdated, ISentence<?> sentenceBase, int multiplier) throws IllegalArgumentException {
-        mutateValue(sentenceUpdated, sentenceBase);
-
-        Object valueObject = sentenceUpdated.getObject();
-        Object baseObject = sentenceBase.getObject();
-
-        if(ValueParser.isDouble(valueObject)) {
-            Double newValue = ValueParser.parseDouble(valueObject);
-            Double oldValue = ValueParser.parseDouble(baseObject);
-            sentenceUpdated.setObject(oldValue + newValue * multiplier);
-        } else if(ValueParser.isNumeric(valueObject)) {
-            Integer newValue = ValueParser.parseInteger(valueObject);
-            Integer oldValue = ValueParser.parseInteger(baseObject);
-            sentenceUpdated.setObject(oldValue + newValue * multiplier);
-        } else{
-            throw new IllegalArgumentException("Cannot merge the fields, both must be Number type objects");
-        }
-    }
-
-    private void buildComplexField(String input, int position, ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) {
+    private void buildInnerSequence(String input, int position, ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) {
         int keyPosition = position + 1;
         int actionPosition = keyPosition + 1;
         int typePosition = actionPosition + 1;
@@ -181,8 +138,8 @@ public abstract class ASentence<T> implements ISentence<T> {
         int closePointer = calculateComplexPointer(input, position);
         String fragment = splitFragment(input, typePosition, closePointer);
 
-        Sequence s = new Sequence(fragment, sentenceBase);
-        s.build(sentenceUpdated);
+        Sequence sequence = new Sequence(fragment, sentenceBase);
+        sequence.build(sentenceUpdated);
     }
 
     private int calculatePointer(String input, int pointer) {
@@ -190,10 +147,10 @@ public abstract class ASentence<T> implements ISentence<T> {
         int actionPointer = keyPointer + 1;
         int typePointer = actionPointer + 1;
 
-        String action = getAction(input, pointer);
-        String type = getType(input, pointer);
+        String action = getActionField(input, pointer);
+        String type = getTypeField(input, pointer);
 
-        String command = getCommand(input, pointer);
+        String command = getCommandField(input, pointer);
 
         if(isRawValue(command)){
             return pointer;
@@ -239,12 +196,6 @@ public abstract class ASentence<T> implements ISentence<T> {
             closePosition = findNextReference(input, closePosition, CLOSE);
 
         return closePosition;
-    }
-
-    protected String getCommand(String input, int pointer){
-        String[] startCommands = input.split(SEPARATOR, pointer + 1);
-        String[] endCommands = startCommands[pointer].split(SEPARATOR, pointer + 2);
-        return endCommands[0];
     }
 
     protected int findNextReference(String input, int pointer, String reference){
