@@ -38,7 +38,7 @@ Types:
    "$erase":"this_field_out",
    "object_data_complex_1":{
       "$integer":"3",
-      "sub_level_1":{
+      "sub_object_data_complex_1":{
          "$string":"str 4"
       }
    }
@@ -65,7 +65,7 @@ FIELD object_data_complex_1 MUTATE OBJECT
     FIELD $integer AS 4
 CLOSE
 FIELD $object_data_complex_2 AS OBJECT
-    FIELD $sub_level_2 AS OBJECT
+    FIELD $sub_object_data_complex_2 AS OBJECT
         FIELD $integer AS 12
         FIELD $string AS "str 5"
         FIELD $boolean AS true
@@ -97,7 +97,7 @@ CLOSE
       }
    },
    "$object_data_complex_2":{
-      "$sub_level_2":{
+      "$sub_object_data_complex_1":{
          "$string":"str 5",
          "$boolean":true,
          "$integer":12

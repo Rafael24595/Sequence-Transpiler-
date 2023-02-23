@@ -1,4 +1,4 @@
-package sequence.sentence;
+package domain.sequence.sentence;
 
 public class KSentence {
 

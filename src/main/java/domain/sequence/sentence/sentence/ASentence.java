@@ -1,13 +1,13 @@
-package sequence.sentence.sentence;
+package domain.sequence.sentence.sentence;
 
-import static sequence.sentence.KSentence.*;
-
-import sequence.Sequence;
-import sequence.sentence.SentenceMixer;
+import static domain.sequence.sentence.KSentence.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import domain.sequence.Sequence;
+import domain.sequence.sentence.SentenceMixer;
 
 public abstract class ASentence<T> implements ISentence<T> {
 

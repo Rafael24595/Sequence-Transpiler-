@@ -1,11 +1,10 @@
-package sequence.sentence;
+package domain.sequence.sentence;
 
+import static domain.sequence.sentence.KSentence.*;
+
+import domain.sequence.sentence.sentence.ISentence;
 import tools.Sanitizer;
 import tools.ValueParser;
-
-import static sequence.sentence.KSentence.*;
-
-import sequence.sentence.sentence.ISentence;
 
 public class SentenceMixer {
     

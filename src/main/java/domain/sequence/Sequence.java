@@ -1,8 +1,8 @@
-package sequence;
+package domain.sequence;
 
-import static sequence.sentence.KSentence.*;
+import static domain.sequence.sentence.KSentence.*;
 
-import sequence.sentence.sentence.ISentence;
+import domain.sequence.sentence.sentence.ISentence;
 
 public class Sequence {
 

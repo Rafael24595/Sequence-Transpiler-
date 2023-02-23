@@ -1,8 +1,9 @@
 package tools;
 
+import static domain.sequence.sentence.KSentence.*;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static sequence.sentence.KSentence.*;
 
 public class Sanitizer {
 

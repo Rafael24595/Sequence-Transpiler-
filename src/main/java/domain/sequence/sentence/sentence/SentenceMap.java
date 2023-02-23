@@ -1,4 +1,4 @@
-package sequence.sentence.sentence;
+package domain.sequence.sentence.sentence;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,5 +56,5 @@ public class SentenceMap extends ASentence<HashMap<String, Object>> {
     public boolean isNull() {
         return map == null || map.isEmpty();
     }
-    
+
 }

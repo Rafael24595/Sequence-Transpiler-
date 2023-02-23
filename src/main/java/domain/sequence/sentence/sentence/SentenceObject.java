@@ -1,4 +1,4 @@
-package sequence.sentence.sentence;
+package domain.sequence.sentence.sentence;
 
 public class SentenceObject extends ASentence<Object> {
 
