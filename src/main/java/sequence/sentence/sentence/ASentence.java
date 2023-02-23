@@ -43,7 +43,7 @@ public abstract class ASentence<T> implements ISentence<T> {
     private String getNameField(String input, int pointer){
         String command = getCommandField(input, pointer);
 
-        if(!isRawValue(command)){
+        if(!isRawData(command)){
             int keyPointer = pointer + NAME_POINTER_CORRECTION;
             return getCommandField(input, keyPointer);
         }
@@ -54,7 +54,7 @@ public abstract class ASentence<T> implements ISentence<T> {
     private String getActionField(String input, int pointer){
         String command = getCommandField(input, pointer);
 
-        if(!isRawValue(command)){
+        if(!isRawData(command)){
             int actionPointer = pointer + ACTION_POINTER_CORRECTION;
             return getCommandField(input, actionPointer);
         }
@@ -65,7 +65,7 @@ public abstract class ASentence<T> implements ISentence<T> {
     private String getTypeField(String input, int pointer){
         String command = getCommandField(input, pointer);
 
-        if(!isRawValue(command)){
+        if(!isRawData(command)){
             int typePointer = pointer + TYPE_POINTER_CORRECTION;
             return getCommandField(input, typePointer);
         }
@@ -77,13 +77,8 @@ public abstract class ASentence<T> implements ISentence<T> {
         String command = getCommandField(input, pointer);
         String type = getTypeField(input, pointer);
         
-        String field = type;
-        int fixedPointer = pointer;
-
-        if(isRawValue(command)){
-            field = command;
-            fixedPointer = pointer - TYPE_POINTER_CORRECTION;
-        }
+        String field = isRawData(command) ? command : type;
+        int fixedPointer = isRawData(command) ? pointer - TYPE_POINTER_CORRECTION : pointer;
 
         return fillbuildSentenceUpdate(field, input, fixedPointer, sentenceBase);
     }
@@ -112,11 +107,9 @@ public abstract class ASentence<T> implements ISentence<T> {
         String name = getNameField(input, pointer);
         String type = getTypeField(input, pointer);
 
-        if(!isRawValue(command)){
-            return fillbuildSentenceBase(type, name, sentenceBase);
-        } else {
-            return fillbuildSentenceBase(command, name, sentenceBase);
-        }
+        String field = isRawData(command) ? command : type;
+
+        return fillbuildSentenceBase(field, name, sentenceBase);
     }
 
     private ISentence<?> fillbuildSentenceBase(String field,  String name, ISentence<?> sentenceBase){
@@ -159,20 +152,20 @@ public abstract class ASentence<T> implements ISentence<T> {
 
         String command = getCommandField(input, pointer);
 
-        if(isRawValue(command)){
+        if(isRawData(command)){
             return isComplexField(command) ? calculateComplexPointerAcurate(input, pointer) : pointer;
         }
         if(isDeclarationField(action)){
             return actionPointer;
         }
-        if(isComplexField(type) || isComplexField(command)){
+        if(isComplexField(type)){
             return calculateComplexPointerAcurate(input, pointer);
         }
 
         return typePointer;
     }
 
-    private boolean isRawValue(String command){
+    private boolean isRawData(String command){
         return !command.equals(FIELD);
     }
 
