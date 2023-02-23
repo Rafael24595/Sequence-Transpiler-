@@ -49,4 +49,9 @@ public class SentenceList extends ASentence<List<Object>> {
         list = receiver;
     }
 
+    @Override
+    public boolean isNull() {
+        return list == null || list.isEmpty();
+    }
+
 }

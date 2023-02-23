@@ -38,4 +38,9 @@ public class SentenceObject extends ASentence<Object> {
     public void merge(ISentence<?> sentenceObject) {
     }
 
+    @Override
+    public boolean isNull() {
+        return object == null;
+    }
+
 }

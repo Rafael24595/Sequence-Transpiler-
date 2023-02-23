@@ -11,47 +11,47 @@ public class Main {
     static Map<String, Object> updateMap = new HashMap<>();
 
     static String inputText = """
-                FIELD $data MUTATE OBJECT
-                    FIELD $integer INCREMENT 11.99
-                    FIELD $string MUTATE "cadena 1"
+                FIELD $object_data_1 MUTATE OBJECT
+                    FIELD $integer INCREMENT 11.95
+                    FIELD $string MUTATE "str 2"
                     FIELD $boolean MUTATE false
                 CLOSE
-                FIELD $steps MUTATE LIST
+                FIELD $list_data MUTATE LIST
                     10 11 12 13
                 CLOSE
-                FIELD $complex_list AS LIST
+                FIELD $complex_list_data AS LIST
                     OBJECT
                         FIELD $integer AS 311
-                        FIELD $string AS "cadena 99"
+                        FIELD $string AS "str 3"
                     CLOSE
                 CLOSE
                 FIELD $erase DELETE
-                FIELD multi_level_1 MUTATE OBJECT
-                    FIELD $integer_4 AS 4
+                FIELD object_data_complex_1 MUTATE OBJECT
+                    FIELD $integer AS 4
                 CLOSE
-                FIELD $test AS OBJECT
-                    FIELD $sub-test AS OBJECT
-                        FIELD $integer_2 AS 12
-                        FIELD $string_2 AS "cadena 2"
-                        FIELD $boolean_2 AS true
+                FIELD $object_data_complex_2 AS OBJECT
+                    FIELD $sub_level_2 AS OBJECT
+                        FIELD $integer AS 12
+                        FIELD $string AS "str 5"
+                        FIELD $boolean AS true
                     CLOSE
                 CLOSE
             """;
 
     static String baseJson = """
             {
-              "$data":{
+              "$object_data_1":{
                 "$integer": 1,
                 "$string": "empty 1",
                 "$boolean": true,
-                "test_new": "test_field_1"
+                "$string_new": "str 1"
               },
-              "$steps": [0],
+              "$list_data": [0],
               "$erase": "this_field_out",
-              "multi_level_1":{
-                "$integer_3": "3",
-                "multi_level_2": {
-                    "$string": "cadena 2"
+              "object_data_complex_1":{
+                "$integer": "3",
+                "sub_level_1": {
+                    "$string": "str 4"
                 }
               }
             }
@@ -69,6 +69,9 @@ public class Main {
 
         Sequence sequence = new Sequence(input, sentenceBase);
         sequence.build(sentenceUpdate);
+
+        String jsonStr = new Gson().toJson(updateMap);
+        System.out.println(jsonStr);
 
         System.out.println("Close app...");
     }

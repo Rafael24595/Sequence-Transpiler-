@@ -8,4 +8,5 @@ public interface ISentence<T> {
     void addAttribute(String key, Object value);
     void removeAttribute(String key);
     void merge(ISentence<?> object);
+    boolean isNull();
 }

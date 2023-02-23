@@ -62,7 +62,7 @@ public class SentenceMixer {
     }
 
     private static void mutateValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
-        if(sentenceBase == null)
+        if(sentenceBase.isNull())
             throw new IllegalArgumentException("Field does not exists");
         sentenceUpdated.merge(sentenceBase);
         asValue(sentenceUpdated, sentenceBase);

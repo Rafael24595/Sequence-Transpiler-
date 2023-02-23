@@ -52,4 +52,9 @@ public class SentenceMap extends ASentence<HashMap<String, Object>> {
         map = receiver;
     }
 
+    @Override
+    public boolean isNull() {
+        return map == null || map.isEmpty();
+    }
+    
 }
