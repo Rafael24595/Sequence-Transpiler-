@@ -69,39 +69,42 @@ public class SentenceMixer {
     }
 
     private static void decrementValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
-        calculateValue(sentenceUpdated, sentenceBase, - 1);
+        calculateNumber(sentenceUpdated, sentenceBase, - 1);
     }
 
     private static void incrementValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
-        calculateValue(sentenceUpdated, sentenceBase, 1);
+        calculateNumber(sentenceUpdated, sentenceBase, 1);
     }
 
-    private static void calculateValue(ISentence sentenceUpdated, ISentence<?> sentenceBase, int multiplier) throws IllegalArgumentException {
+    private static void calculateNumber(ISentence sentenceUpdated, ISentence<?> sentenceBase, int multiplier) throws IllegalArgumentException {
         mutateValue(sentenceUpdated, sentenceBase);
 
-        Object valueObject = sentenceUpdated.getObject();
+        Object updateObject = sentenceUpdated.getObject();
         Object baseObject = sentenceBase.getObject();
+
+        if(!ValueParser.instanceOfNumber(baseObject) || !ValueParser.instanceOfNumber(updateObject))
+            throw new IllegalArgumentException("Cannot add up non numeric objects.");
 
         Object value = null;
 
-        if(ValueParser.isDouble(valueObject))
-            value = calculateDouble(valueObject, baseObject, multiplier);
-        else if(ValueParser.isNumeric(valueObject)) 
-            value = calculateInteger(valueObject, baseObject, multiplier);
+        if(ValueParser.isDouble(updateObject))
+            value = calculateDouble(updateObject, baseObject, multiplier);
+        else if(ValueParser.isNumeric(updateObject)) 
+            value = calculateInteger(updateObject, baseObject, multiplier);
         else
             throw new IllegalArgumentException("Cannot merge the fields, both must be Number type objects");
 
         sentenceUpdated.setObject(value);
     }
 
-    private static Double calculateDouble(Object valueObject, Object baseObject, int multiplier){
-        Double newValue = ValueParser.parseDouble(valueObject);
+    private static Double calculateDouble(Object updateObject, Object baseObject, int multiplier) {
+        Double newValue = ValueParser.parseDouble(updateObject);
         Double oldValue = ValueParser.parseDouble(baseObject);
         return oldValue + newValue * multiplier;
     }
 
-    private static Integer calculateInteger(Object valueObject, Object baseObject, int multiplier){
-        Integer newValue = ValueParser.parseInteger(valueObject);
+    private static Integer calculateInteger(Object updateObject, Object baseObject, int multiplier) {
+        Integer newValue = ValueParser.parseInteger(updateObject);
         Integer oldValue = ValueParser.parseInteger(baseObject);
         return oldValue + newValue * multiplier;
     }

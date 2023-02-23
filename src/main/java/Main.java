@@ -41,7 +41,7 @@ public class Main {
     static String baseJson = """
             {
               "$data":{
-                "$integer": "1",
+                "$integer": 1,
                 "$string": "empty 1",
                 "$boolean": true,
                 "test_new": "test_field_1"

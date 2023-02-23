@@ -28,6 +28,10 @@ public class ValueParser {
         return false;
     }
 
+    public static boolean instanceOfNumber(Object object){
+        return object instanceof Double || object instanceof Integer;
+    }
+
     public static boolean isNumeric(Object object){
         if (object instanceof Double || object instanceof Integer)
             return true;
