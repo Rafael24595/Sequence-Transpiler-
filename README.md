@@ -1,4 +1,4 @@
-### Sequence structure
+### Sequence structure:
 **1.- COMMAND:** Field | Raw object/value(used in list type complex structures)
 Types:
 - **FIELD**: Define the beggining of an key-value structure.
