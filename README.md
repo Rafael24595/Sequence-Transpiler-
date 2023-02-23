@@ -92,12 +92,12 @@ CLOSE
    ],
    "object_data_complex_1":{
       "$integer":4,
-      "sub_level_1":{
+      "sub_object_data_complex_1":{
          "$string":"str 4"
       }
    },
    "$object_data_complex_2":{
-      "$sub_object_data_complex_1":{
+      "$sub_object_data_complex_2":{
          "$string":"str 5",
          "$boolean":true,
          "$integer":12
