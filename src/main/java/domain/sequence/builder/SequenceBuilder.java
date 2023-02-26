@@ -6,14 +6,47 @@ import java.util.*;
 
 public class SequenceBuilder {
 
-    public String build(Map<String, Object> oldStructure, Map<String, Object> newStructure){
+    private Map<String, Object> oldStructure;
+    private Map<String, Object> newStructure;
+
+    private int level;
+
+    private boolean format;
+
+    public SequenceBuilder(Map<String, Object> oldStructure, Map<String, Object> newStructure){
+        this(oldStructure, newStructure, 0);
+    }
+
+    public SequenceBuilder(Map<String, Object> oldStructure, Map<String, Object> newStructure, int level){
+        this.oldStructure = oldStructure;
+        this.newStructure = newStructure;
+        this.level = level;
+
+        disableFormat();
+    }
+
+    public void enableFormat() {
+        this.format = true;
+    }
+
+    public void disableFormat() {
+        this.format = false;
+    }
+
+    private void setFormat(boolean format) {
+        this.format = format;
+    }
+
+    public String build(){
         StringBuilder sb = new StringBuilder();
 
         for (String key: ValueParser.joinMapKeys(oldStructure, newStructure)) {
             SequenceStructure sequence = new SequenceStructure(key);
+            sequence.format = format;
+            sequence.setLevel(level);
 
             if(newStructure.containsKey(key))
-                persist(sequence, oldStructure, newStructure);
+                persist(sequence);
             else
                 sequence.delete();
 
@@ -23,14 +56,14 @@ public class SequenceBuilder {
         return sb.toString();
     }
 
-    private void persist(SequenceStructure sequence, Map<String, Object> oldStructure, Map<String, Object> newStructure) {
+    private void persist(SequenceStructure sequence) {
         if(oldStructure != null && oldStructure.containsKey(sequence.name))
-            persistAsModify(sequence, oldStructure, newStructure);
+            persistAsModify(sequence);
         else
-            persistAsNew(sequence, newStructure);
+            persistAsNew(sequence);
     }
 
-    private void persistAsModify(SequenceStructure sequence, Map<String, Object> oldStructure, Map<String, Object> newStructure){
+    private void persistAsModify(SequenceStructure sequence){
         Object oldValue = oldStructure.get(sequence.name);
         Object newValue = newStructure.get(sequence.name);
 
@@ -43,7 +76,7 @@ public class SequenceBuilder {
         }
     }
 
-    private void persistAsNew(SequenceStructure sequence, Map<String, Object> newStructure){
+    private void persistAsNew(SequenceStructure sequence){
         Object value2 = newStructure.get(sequence.name);
         sequence.as();
         buildValue(sequence ,null, value2);
@@ -63,9 +96,12 @@ public class SequenceBuilder {
         List<String> values = new ArrayList<>();
 
         for (Object value: list) {
-            SequenceStructure valueContainer = new SequenceStructure();
-            buildValue(valueContainer, null, value);
-            values.add(valueContainer.value);
+            SequenceStructure sequenceChild = new SequenceStructure();
+            sequenceChild.format = format;
+            sequenceChild.setLevel(sequence.level + 1);
+
+            buildValue(sequenceChild, null, value);
+            values.add(sequenceChild.value);
         }
 
         sequence.listValue(values);
@@ -73,7 +109,9 @@ public class SequenceBuilder {
     }
 
     private SequenceStructure buildObject(SequenceStructure sequence, Object objectOld, Object objectNew) {
-        String value = build((Map<String, Object>) objectOld, (Map<String, Object>) objectNew);
+        SequenceBuilder sb = new SequenceBuilder((Map<String, Object>) objectOld, (Map<String, Object>) objectNew, sequence.level + 1);
+        sb.setFormat(format);
+        String value = sb.build();
         sequence.objectValue(value);
         return sequence;
     }

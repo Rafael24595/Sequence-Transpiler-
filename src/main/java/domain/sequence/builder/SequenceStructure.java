@@ -6,23 +6,31 @@ import static domain.sequence.sentence.KSentence.*;
 
 public class SequenceStructure {
 
+    int level;
+    boolean format;
+
     String field;
     String name;
     String action;
     String value;
 
-    public SequenceStructure() {
-        this.field = FIELD;
-        this.name = "name";
-        this.action = "";
-        this.value = "";
-    }
-
     public SequenceStructure(String name) {
+        this();
         this.field = FIELD;
         this.name = name;
+    }
+
+    public SequenceStructure() {
+        this.field = FIELD;
+        this.name = "";
         this.action = "";
         this.value = "";
+
+        this.format = false;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public boolean isMutate() {
@@ -89,10 +97,14 @@ public class SequenceStructure {
         sb.append(LIST);
         sb.append(SEPARATOR);
 
+        sb.append(getIndentFormat(1));
+
         for (Object element: list) {
             sb.append(element);
             sb.append(SEPARATOR);
         }
+
+        sb.append(getIndentFormat());
 
         sb.append(CLOSE);
 
@@ -100,24 +112,48 @@ public class SequenceStructure {
     }
 
     public void objectValue(String value) {
-        this.value = OBJECT + SEPARATOR + value + SEPARATOR + CLOSE;
+        String indent = getIndentFormat();
+        this.value = OBJECT + SEPARATOR + value + indent + CLOSE;
     }
 
     public String build(){
         StringBuilder sb = new StringBuilder();
 
+        if(!value.isEmpty())
+            sb.append(getIndentFormat());
+
         sb.append(field);
         if(!field.isEmpty())
             sb.append("\s");
         sb.append(name);
-        if(!field.isEmpty())
+        if(!name.isEmpty())
             sb.append("\s");
         sb.append(action);
-        if(!field.isEmpty())
+        if(!action.isEmpty())
             sb.append("\s");
         sb.append(value);
-        if(!field.isEmpty())
+        if(!value.isEmpty())
             sb.append("\s");
+
+        return sb.toString();
+    }
+
+    private String getIndentFormat(){
+        return getIndentFormat(0);
+    }
+
+    private String getIndentFormat(int increment){
+        if(!format)
+            return "";
+
+        StringBuilder sb = new StringBuilder();
+
+        if(!field.isEmpty())
+            sb.append("\n");
+
+        for (int i = 0; i < level + increment; i++) {
+            sb.append("\t");
+        }
 
         return sb.toString();
     }

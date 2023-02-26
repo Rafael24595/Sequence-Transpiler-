@@ -2,7 +2,7 @@ package test;
 
 public class KInput {
     
-    public static final String SEQUENCE = """
+    public static final String SEQUENCE_TEST_1 = """
         FIELD $object_data_1 MUTATE OBJECT
             FIELD $integer INCREMENT 11.95
             FIELD $string MUTATE "str 2"
@@ -30,7 +30,7 @@ public class KInput {
         CLOSE
             """;
 
-    public static final String BASE = """
+    public static final String BASE_TEST_1 = """
             {
                 "$object_data_1":{
                   "$integer": 1,
@@ -48,5 +48,54 @@ public class KInput {
                 }
               }
                 """;
+
+    public static final String BASE_TEST_2 = """
+            {
+                "1_erase_integer": 1,
+                "1_eq_number": 1,
+                "1_mu_string": "string",
+                "1_eq_boolean": false,
+                "1_mu_list": [
+                    1, 2, 3, 4
+                ],
+                "1_mu_object": {
+                    "2_eq_string": "string_2",
+                    "2_mu_object":{
+                        "3_eq_number": 2,
+                        "3_mu_object":{
+                            "4_mu_string": "string_4",
+                            "4_mu_integer": 1,
+                            "4_eq_boolean": false
+                        }
+                    }
+                }
+            }
+            """;
+
+    public static final String CHANGE_TEST_1 = """
+            {
+                "1_erase_integer": 1,
+                "1_eq_number": 1,
+                "1_mu_string": "string_x",
+                "1_eq_boolean": false,
+                "1_mu_list": [
+                    1, 2, "3", {
+                        "2_as_string": "string_x",
+                        "2_as_boolean": false
+                    }
+                ],
+                "1_mu_object": {
+                    "2_eq_string": "string_2",
+                    "2_mu_object":{
+                        "3_eq_number": 2,
+                        "3_mu_object":{
+                            "4_mu_string": "string_z",
+                            "4_mu_integer": 2,
+                            "4_eq_boolean": false
+                        }
+                    }
+                }
+            }
+            """;
 
 }

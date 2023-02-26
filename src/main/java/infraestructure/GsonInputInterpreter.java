@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 
 import domain.IInputInterpeter;
 
-public class GsonInputInterpeter implements IInputInterpeter {
+public class GsonInputInterpreter implements IInputInterpeter {
 
     @Override
     public Map<String, Object> read(String input) {
