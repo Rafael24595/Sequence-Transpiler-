@@ -74,7 +74,6 @@ public class KInput {
 
     public static final String CHANGE_TEST_1 = """
             {
-                "1_erase_integer": 1,
                 "1_eq_number": 1,
                 "1_mu_string": "string_x",
                 "1_eq_boolean": false,
