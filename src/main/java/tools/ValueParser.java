@@ -1,5 +1,7 @@
 package tools;
 
+import java.util.*;
+
 public class ValueParser {
 
     private ValueParser(){
@@ -111,6 +113,27 @@ public class ValueParser {
             }
 
         throw new IllegalArgumentException("Invalid object type.");
+    }
+
+    public static boolean typeOf(Object value1, Object value2){
+        return value1.getClass().isAssignableFrom(value2.getClass());
+    }
+
+    public static Set<String> joinMapKeys(Map<String, Object> map1, Map<String, Object> map2) {
+        Set<String> joinSet = new HashSet<>();
+        if(map1 != null)
+            joinSet.addAll(map1.keySet());
+        joinSet.addAll(map2.keySet());
+
+        return joinSet;
+    }
+
+    public static List<Object> joinListValues(List<Object> list1, List<Object> list2){
+        LinkedHashSet<Object> hash = new LinkedHashSet<>();
+        hash.addAll(list2);
+        hash.addAll(list1);
+
+        return new ArrayList<>(hash);
     }
 
 }
