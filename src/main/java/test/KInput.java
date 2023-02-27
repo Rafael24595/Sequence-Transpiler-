@@ -64,7 +64,8 @@ public class KInput {
                         "3_eq_number": 2,
                         "3_mu_object":{
                             "4_mu_string": "string_4",
-                            "4_mu_integer": 1,
+                            "4_mu_integer_1": 1,
+                            "4_mu_integer_2": 3,
                             "4_eq_boolean": false
                         }
                     }
@@ -89,7 +90,8 @@ public class KInput {
                         "3_eq_number": 2,
                         "3_mu_object":{
                             "4_mu_string": "string_z",
-                            "4_mu_integer": 2,
+                            "4_mu_integer_1": 2,
+                            "4_mu_integer_2": 1,
                             "4_eq_boolean": false
                         }
                     }
