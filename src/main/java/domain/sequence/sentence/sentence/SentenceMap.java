@@ -26,6 +26,11 @@ public class SentenceMap extends ASentence<HashMap<String, Object>> {
     }
 
     @Override
+    public boolean exists(String key) {
+        return map.containsKey(key);
+    }
+
+    @Override
     public Object getAttribute(String key) {
         return map.get(key);
     }

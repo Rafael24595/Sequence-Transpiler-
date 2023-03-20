@@ -23,6 +23,11 @@ public class SentenceList extends ASentence<List<Object>> {
     }
 
     @Override
+    public boolean exists(String key) {
+        return this.list != null;
+    }
+
+    @Override
     public Object getAttribute(String key) {
         return null;
     }

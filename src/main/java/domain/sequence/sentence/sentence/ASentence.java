@@ -36,8 +36,12 @@ public abstract class ASentence<T> implements ISentence<T> {
 
     protected String getCommandField(String input, int pointer){
         String[] startCommands = input.split(SEPARATOR, pointer + 1);
-        String[] endCommands = startCommands[pointer].split(SEPARATOR, pointer + 2);
-        return endCommands[0];
+        if (pointer < startCommands.length){
+            String[] endCommands = startCommands[pointer].split(SEPARATOR, pointer + 2);
+            return endCommands[0];
+        }
+
+        return "";
     }
 
     private String getNameField(String input, int pointer){
@@ -80,10 +84,10 @@ public abstract class ASentence<T> implements ISentence<T> {
         String field = isRawData(command) ? command : type;
         int fixedPointer = isRawData(command) ? pointer - TYPE_POINTER_CORRECTION : pointer;
 
-        return fillbuildSentenceUpdate(field, input, fixedPointer, sentenceBase);
+        return fillBuildSentenceUpdate(field, input, fixedPointer, sentenceBase);
     }
 
-    private ISentence<?> fillbuildSentenceUpdate(String field, String input, int pointer, ISentence<?> sentenceBase) {
+    private ISentence<?> fillBuildSentenceUpdate(String field, String input, int pointer, ISentence<?> sentenceBase) {
         ISentence<?> sentenceUpdated;
 
         switch (field){

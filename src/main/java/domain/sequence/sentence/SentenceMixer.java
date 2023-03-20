@@ -29,6 +29,8 @@ public class SentenceMixer {
                 sentenceReceptor.addAttribute(name, sentenceUpdated.getObject());
                 break;
             case DELETE:
+                if(!sentenceReceptor.exists(name))
+                    throw new IllegalArgumentException("Field does not exists.");
                 sentenceReceptor.removeAttribute(name);
                 break;
             default:
@@ -39,32 +41,83 @@ public class SentenceMixer {
     }
 
     private static void asValue(ISentence sentenceUpdated, ISentence<?> sentenceBase) {
+        Object valueBase = sentenceBase.getObject();
         Object valueObject = sentenceUpdated.getObject();
         Object valueParsed;
 
         if(ValueParser.isInteger(valueObject)) {
+            if(valueBase != null && !ValueParser.instanceOfNumber(valueBase))
+                throw new IllegalArgumentException("Cannot merge the fields, both must be Numeric type objects");
             valueParsed = ValueParser.parseInteger(valueObject);
             sentenceUpdated.setObject(valueParsed);
         }
         else if(ValueParser.isDouble(valueObject)){
+            if(valueBase != null && !ValueParser.instanceOfNumber(valueBase))
+                throw new IllegalArgumentException("Cannot merge the fields, both must be Numeric type objects");
             valueParsed = ValueParser.parseDouble(valueObject);
             sentenceUpdated.setObject(valueParsed);
         }
         else if(ValueParser.isBoolean(valueObject)){
+            if(valueBase != null && !ValueParser.instanceOfBoolean(valueBase))
+                throw new IllegalArgumentException("Cannot merge the fields, both must be Boolean type objects");
             valueParsed = ValueParser.parseBoolean(valueObject);
             sentenceUpdated.setObject(valueParsed);
         }
         else if(ValueParser.isString(valueObject)){
+            if(valueBase != null && !ValueParser.instanceOfString(valueBase))
+                throw new IllegalArgumentException("Cannot merge the fields, both must be String type objects");
             valueParsed = Sanitizer.unBrickString((String) valueObject);
             sentenceUpdated.setObject(valueParsed);
         }
     }
 
+    /*private static void asValue(ISentence sentenceUpdated, ISentence<?> sentenceBase) {
+        Object valueBase = sentenceBase.getObject();
+        Object valueObject = sentenceUpdated.getObject();
+        Object valueParsed = null;
+
+        if(ValueParser.isInteger(valueObject))
+            valueParsed = asIntegerValue(valueBase, valueObject);
+        if(ValueParser.isDouble(valueObject))
+            valueParsed = asDoubleValue(valueBase, valueObject);
+        if(ValueParser.isBoolean(valueObject))
+            valueParsed = asBooleanValue(valueBase, valueObject);
+        if(ValueParser.isString(valueObject))
+            valueParsed = asStringValue(valueBase, valueObject);
+
+        if(valueParsed != null)
+            sentenceUpdated.setObject(valueParsed);
+    }*/
+
+    private static Object asIntegerValue(Object valueBase, Object valueObject){
+        if(valueBase != null && !ValueParser.instanceOfNumber(valueBase))
+            throw new IllegalArgumentException("Cannot merge the fields, both must be Numeric type objects");
+        return ValueParser.parseInteger(valueObject);
+    }
+
+    private static Object asDoubleValue(Object valueBase, Object valueObject){
+        if(valueBase != null && !ValueParser.instanceOfNumber(valueBase))
+            throw new IllegalArgumentException("Cannot merge the fields, both must be Numeric type objects");
+        return ValueParser.parseDouble(valueObject);
+    }
+
+    private static Object asBooleanValue(Object valueBase, Object valueObject){
+        if(valueBase != null && !ValueParser.instanceOfBoolean(valueBase))
+            throw new IllegalArgumentException("Cannot merge the fields, both must be Boolean type objects");
+        return ValueParser.parseBoolean(valueObject);
+    }
+
+    private static Object asStringValue(Object valueBase, Object valueObject){
+        if(valueBase != null && !ValueParser.instanceOfString(valueBase))
+            throw new IllegalArgumentException("Cannot merge the fields, both must be String type objects");
+        return Sanitizer.unBrickString((String) valueObject);
+    }
+
     private static void mutateValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
         if(sentenceBase.isNull())
-            throw new IllegalArgumentException("Field does not exists");
-        sentenceUpdated.merge(sentenceBase);
+            throw new IllegalArgumentException("Field does not exists.");
         asValue(sentenceUpdated, sentenceBase);
+        sentenceUpdated.merge(sentenceBase);
     }
 
     private static void decrementValue(ISentence<?> sentenceUpdated, ISentence<?> sentenceBase) throws IllegalArgumentException {
@@ -102,9 +155,9 @@ public class SentenceMixer {
         return oldValue + newValue * multiplier;
     }
 
-    private static Integer calculateInteger(Object updateObject, Object baseObject, int multiplier) {
+    private static Double calculateInteger(Object updateObject, Object baseObject, int multiplier) {
         Integer newValue = ValueParser.parseInteger(updateObject);
-        Integer oldValue = ValueParser.parseInteger(baseObject);
+        Double oldValue = ValueParser.parseDouble(baseObject);
         return oldValue + newValue * multiplier;
     }
 

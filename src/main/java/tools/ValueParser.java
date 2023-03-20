@@ -30,6 +30,14 @@ public class ValueParser {
         return false;
     }
 
+    public static boolean instanceOfString(Object object){
+        return object instanceof String;
+    }
+
+    public static boolean instanceOfBoolean(Object object){
+        return object instanceof Boolean;
+    }
+
     public static boolean instanceOfNumber(Object object){
         return object instanceof Double || object instanceof Integer;
     }

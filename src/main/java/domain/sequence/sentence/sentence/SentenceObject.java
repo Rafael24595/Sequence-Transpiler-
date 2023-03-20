@@ -20,6 +20,11 @@ public class SentenceObject extends ASentence<Object> {
     }
 
     @Override
+    public boolean exists(String key) {
+        return this.object != null;
+    }
+
+    @Override
     public Object getAttribute(String key) {
         return object;
     }

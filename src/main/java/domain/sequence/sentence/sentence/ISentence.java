@@ -7,6 +7,7 @@ public interface ISentence<T> {
     Object getAttribute(String key);
     void addAttribute(String key, Object value);
     void removeAttribute(String key);
+    boolean exists(String key);
     void merge(ISentence<?> object);
     boolean isNull();
 }

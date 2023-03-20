@@ -41,7 +41,7 @@ public class KInput {
                 "$list_data": [0],
                 "$erase": "this_field_out",
                 "object_data_complex_1":{
-                  "$integer": "3",
+                  "$integer": 3,
                   "sub_object_data_complex_1": {
                       "$string": "str 4"
                   }
