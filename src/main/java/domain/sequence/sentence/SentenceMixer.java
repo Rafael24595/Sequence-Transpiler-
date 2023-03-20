@@ -43,51 +43,20 @@ public class SentenceMixer {
     private static void asValue(ISentence sentenceUpdated, ISentence<?> sentenceBase) {
         Object valueBase = sentenceBase.getObject();
         Object valueObject = sentenceUpdated.getObject();
-        Object valueParsed;
-
-        if(ValueParser.isInteger(valueObject)) {
-            if(valueBase != null && !ValueParser.instanceOfNumber(valueBase))
-                throw new IllegalArgumentException("Cannot merge the fields, both must be Numeric type objects");
-            valueParsed = ValueParser.parseInteger(valueObject);
-            sentenceUpdated.setObject(valueParsed);
-        }
-        else if(ValueParser.isDouble(valueObject)){
-            if(valueBase != null && !ValueParser.instanceOfNumber(valueBase))
-                throw new IllegalArgumentException("Cannot merge the fields, both must be Numeric type objects");
-            valueParsed = ValueParser.parseDouble(valueObject);
-            sentenceUpdated.setObject(valueParsed);
-        }
-        else if(ValueParser.isBoolean(valueObject)){
-            if(valueBase != null && !ValueParser.instanceOfBoolean(valueBase))
-                throw new IllegalArgumentException("Cannot merge the fields, both must be Boolean type objects");
-            valueParsed = ValueParser.parseBoolean(valueObject);
-            sentenceUpdated.setObject(valueParsed);
-        }
-        else if(ValueParser.isString(valueObject)){
-            if(valueBase != null && !ValueParser.instanceOfString(valueBase))
-                throw new IllegalArgumentException("Cannot merge the fields, both must be String type objects");
-            valueParsed = Sanitizer.unBrickString((String) valueObject);
-            sentenceUpdated.setObject(valueParsed);
-        }
-    }
-
-    /*private static void asValue(ISentence sentenceUpdated, ISentence<?> sentenceBase) {
-        Object valueBase = sentenceBase.getObject();
-        Object valueObject = sentenceUpdated.getObject();
         Object valueParsed = null;
 
         if(ValueParser.isInteger(valueObject))
             valueParsed = asIntegerValue(valueBase, valueObject);
-        if(ValueParser.isDouble(valueObject))
+        else if(ValueParser.isDouble(valueObject))
             valueParsed = asDoubleValue(valueBase, valueObject);
-        if(ValueParser.isBoolean(valueObject))
+        else if(ValueParser.isBoolean(valueObject))
             valueParsed = asBooleanValue(valueBase, valueObject);
-        if(ValueParser.isString(valueObject))
+        else if(ValueParser.isString(valueObject))
             valueParsed = asStringValue(valueBase, valueObject);
 
         if(valueParsed != null)
             sentenceUpdated.setObject(valueParsed);
-    }*/
+    }
 
     private static Object asIntegerValue(Object valueBase, Object valueObject){
         if(valueBase != null && !ValueParser.instanceOfNumber(valueBase))
