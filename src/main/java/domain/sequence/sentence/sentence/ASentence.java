@@ -109,10 +109,10 @@ public abstract class ASentence<T> implements ISentence<T> {
 
         String field = isRawData(command) ? command : type;
 
-        return fillbuildSentenceBase(field, name, sentenceBase);
+        return fillBuildSentenceBase(field, name, sentenceBase);
     }
 
-    private ISentence<?> fillbuildSentenceBase(String field,  String name, ISentence<?> sentenceBase){
+    private ISentence<?> fillBuildSentenceBase(String field,  String name, ISentence<?> sentenceBase){
         Object baseObjectChild = sentenceBase.getAttribute(name);
 
             switch (field){

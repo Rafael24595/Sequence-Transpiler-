@@ -52,6 +52,10 @@ public class KInput {
     public static final String BASE_TEST_2 = """
             {
                 "1_erase_integer": 1,
+                "1_eq_object": {
+                    "2_eq_string": "string_5",
+                    "2_eq_number": 4
+                },
                 "1_eq_number": 1,
                 "1_mu_string": "string",
                 "1_eq_boolean": false,
@@ -73,9 +77,13 @@ public class KInput {
             }
             """;
 
-    public static final String CHANGE_TEST_1 = """
+    public static final String UPDATE_TEST_1 = """
             {
                 "1_eq_number": 1,
+                "1_eq_object": {
+                    "2_eq_string": "string_5",
+                    "2_eq_number": 4
+                },
                 "1_mu_string": "string_x",
                 "1_eq_boolean": false,
                 "1_mu_list": [
