@@ -108,8 +108,10 @@ public class SentenceMixer {
 
         Object value = null;
 
-        if(ValueParser.isDouble(updateObject))
+        if(ValueParser.isDouble(updateObject) || ValueParser.isDouble(baseObject))
             value = calculateDouble(updateObject, baseObject, multiplier);
+        else if(ValueParser.isLong(updateObject) || ValueParser.isLong(baseObject))
+            value = calculateLong(updateObject, baseObject, multiplier);
         else if(ValueParser.isNumeric(updateObject)) 
             value = calculateInteger(updateObject, baseObject, multiplier);
         else
@@ -124,9 +126,14 @@ public class SentenceMixer {
         return oldValue + newValue * multiplier;
     }
 
-    private static Double calculateInteger(Object updateObject, Object baseObject, int multiplier) {
+    private static Long calculateLong(Object updateObject, Object baseObject, int multiplier) {
+        Long newValue = ValueParser.parseLong(updateObject);
+        Long oldValue = ValueParser.parseLong(baseObject);
+        return oldValue + newValue * multiplier;
+    }
+    private static Integer calculateInteger(Object updateObject, Object baseObject, int multiplier) {
         Integer newValue = ValueParser.parseInteger(updateObject);
-        Double oldValue = ValueParser.parseDouble(baseObject);
+        Integer oldValue = ValueParser.parseInteger(baseObject);
         return oldValue + newValue * multiplier;
     }
 

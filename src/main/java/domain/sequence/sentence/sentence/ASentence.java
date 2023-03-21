@@ -124,13 +124,13 @@ public abstract class ASentence<T> implements ISentence<T> {
                     try {
                         return new SentenceMap((Map<String, Object>) baseObjectChild);
                     } catch (Exception e) {
-                        throw new ClassCastException("Format error, Map type structure required, but \"" + baseObjectChild.getClass() + "\" obtained.");
+                        throw new ClassCastException("Format error, Map type structure required.");
                     }
                 case LIST:
                     try {
                         return new SentenceList((List<Object>) baseObjectChild);
                     } catch (Exception e) {
-                        throw new ClassCastException("Format error, List type structure required, but \"" + baseObjectChild.getClass() + "\" obtained");
+                        throw new ClassCastException("Format error, List type structure required.");
                     }
                 default:
                     return new SentenceObject(baseObjectChild);

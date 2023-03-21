@@ -21,9 +21,7 @@ public class ValueParser {
 
         try {
             String str = (String) object;
-            if(str.equalsIgnoreCase("TRUE") || str.equalsIgnoreCase("FALSE"))
-                return true;
-            return false;
+            return str.equalsIgnoreCase("TRUE") || str.equalsIgnoreCase("FALSE");
         }catch (Exception e){
         }
 
@@ -39,7 +37,7 @@ public class ValueParser {
     }
 
     public static boolean instanceOfNumber(Object object){
-        return object instanceof Double || object instanceof Integer;
+        return object instanceof Double || object instanceof Long || object instanceof Integer;
     }
 
     public static boolean isNumeric(Object object){
@@ -60,6 +58,18 @@ public class ValueParser {
 
         try {
             Integer.parseInt((String) object);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isLong(Object object){
+        if (object instanceof Long)
+            return true;
+
+        try {
+            Long.parseLong((String) object);
         }catch (Exception e){
             return false;
         }
@@ -106,12 +116,32 @@ public class ValueParser {
         throw new IllegalArgumentException("Invalid object type.");
     }
 
+    public static Long parseLong(Object object) throws IllegalArgumentException {
+        if(object.getClass() == Long.class)
+            return (Long) object;
+
+        if(object.getClass() == Integer.class)
+            return Long.valueOf(parseInteger(object));
+
+        if(object.getClass() == String.class)
+            try {
+                return Long.parseLong((String) object);
+            }catch (Exception e){
+                throw new IllegalArgumentException("Cannot parse "+ object.toString() + " to Integer object.");
+            }
+
+        throw new IllegalArgumentException("Invalid object type.");
+    }
+
     public static Double parseDouble(Object object) throws IllegalArgumentException {
         if(object.getClass() == Double.class)
             return (Double) object;
 
+        if(object.getClass() == Long.class)
+            return Double.valueOf(parseLong(object));
+
         if(object.getClass() == Integer.class)
-            return Double.valueOf((Integer) object);
+            return Double.valueOf(parseInteger(object));
 
         if(object.getClass() == String.class)
             try {

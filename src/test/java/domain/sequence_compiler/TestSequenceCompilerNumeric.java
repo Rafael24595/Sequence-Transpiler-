@@ -1,5 +1,8 @@
-package domain;
+package domain.sequence_compiler;
 
+import domain.IInputInterpeter;
+import domain.IOutputInterpeter;
+import domain.SequenceCompiler;
 import infraestructure.GsonInputInterpreter;
 import infraestructure.GsonOutputInterpreter;
 import org.junit.BeforeClass;
@@ -52,8 +55,17 @@ public class TestSequenceCompilerNumeric {
     }
 
     @Test
-    public void testIncrementNumericOk() {
+    public void testIncrementNumericOk_1() {
         String base = "{\"test\":1}";
+        String sentence = "FIELD test INCREMENT 1";
+        String expected = "{\"test\":2}";
+
+        assertCompile(base, sentence, expected);
+    }
+
+    @Test
+    public void testIncrementNumericOk_2() {
+        String base = "{\"test\":1.0}";
         String sentence = "FIELD test INCREMENT 1";
         String expected = "{\"test\":2.0}";
 
@@ -61,9 +73,36 @@ public class TestSequenceCompilerNumeric {
     }
 
     @Test
-    public void testDecrementNumericOk() {
+    public void testIncrementNumericOk_3() {
+        String base = "{\"test\":1}";
+        String sentence = "FIELD test INCREMENT 1.0";
+        String expected = "{\"test\":2.0}";
+
+        assertCompile(base, sentence, expected);
+    }
+
+    @Test
+    public void testDecrementNumericOk_1() {
         String base = "{\"test\":3}";
         String sentence = "FIELD test DECREMENT 1";
+        String expected = "{\"test\":2}";
+
+        assertCompile(base, sentence, expected);
+    }
+
+    @Test
+    public void testDecrementNumericOk_2() {
+        String base = "{\"test\":3.0}";
+        String sentence = "FIELD test DECREMENT 1";
+        String expected = "{\"test\":2.0}";
+
+        assertCompile(base, sentence, expected);
+    }
+
+    @Test
+    public void testDecrementNumericOk_3() {
+        String base = "{\"test\":3}";
+        String sentence = "FIELD test DECREMENT 1.0";
         String expected = "{\"test\":2.0}";
 
         assertCompile(base, sentence, expected);

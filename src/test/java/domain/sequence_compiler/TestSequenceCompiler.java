@@ -1,5 +1,8 @@
-package domain;
+package domain.sequence_compiler;
 
+import domain.IInputInterpeter;
+import domain.IOutputInterpeter;
+import domain.SequenceCompiler;
 import infraestructure.GsonInputInterpreter;
 import infraestructure.GsonOutputInterpreter;
 import org.junit.BeforeClass;

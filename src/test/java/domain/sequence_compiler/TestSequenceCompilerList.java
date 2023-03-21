@@ -1,5 +1,8 @@
-package domain;
+package domain.sequence_compiler;
 
+import domain.IInputInterpeter;
+import domain.IOutputInterpeter;
+import domain.SequenceCompiler;
 import infraestructure.GsonInputInterpreter;
 import infraestructure.GsonOutputInterpreter;
 import org.junit.BeforeClass;
@@ -8,7 +11,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TestSequenceCompilerBoolean {
+public class TestSequenceCompilerList {
 
     static IInputInterpeter inputInterpreter;
     static IOutputInterpeter outputInterpreter;
@@ -20,64 +23,64 @@ public class TestSequenceCompilerBoolean {
     }
 
     @Test
-    public void testAsBooleanOk() {
-        String base = "{\"test\":true}";
-        String sentence = "FIELD test AS false";
-        String expected = "{\"test\":false}";
+    public void testAsListOk() {
+        String base = "{\"test\":[1,2,3]}";
+        String sentence = "FIELD test AS LIST 4 5 6 CLOSE";
+        String expected = "{\"test\":[4,5,6]}";
 
         assertCompile(base, sentence, expected);
     }
 
     @Test
-    public void testMutateBooleanOk() {
-        String base = "{\"test\":true}";
-        String sentence = "FIELD test MUTATE false";
-        String expected = "{\"test\":false}";
+    public void testMutateListOk() {
+        String base = "{\"test\":[1,2,3]}";
+        String sentence = "FIELD test MUTATE LIST 4 5 6 CLOSE";
+        String expected = "{\"test\":[1,2,3,4,5,6]}";
 
         assertCompile(base, sentence, expected);
     }
 
     @Test
-    public void testMutateBooleanKo() {
-        String base = "{\"test\":\"true\"}";
-        String sentence = "FIELD test MUTATE false";
+    public void testMutateListKo() {
+        String base = "{\"test\":\"[1,2,3]\"}";
+        String sentence = "FIELD test MUTATE LIST 4 5 6 CLOSE";
         SequenceCompiler compiler = new SequenceCompiler(base, sentence);
         try {
             compiler.compile();
             assertTrue("Exception expected but not thrown", false);
         }
-        catch (IllegalArgumentException e){
-            assertEquals("Cannot merge the fields, both must be Boolean type objects", e.getMessage());
+        catch (ClassCastException e){
+            assertEquals("Format error, List type structure required.", e.getMessage());
         }
     }
 
     @Test
-    public void testIncrementBooleanOk() {
-        String base = "{\"test\":true}";
-        String sentence = "FIELD test INCREMENT false";
+    public void testIncrementListOk() {
+        String base = "{\"test\":\"[1,2,3]\"}";
+        String sentence = "FIELD test INCREMENT LIST 4 5 6 CLOSE";
 
         SequenceCompiler compiler = new SequenceCompiler(base, sentence);
         try {
             compiler.compile();
             assertTrue("Exception expected but not thrown", false);
         }
-        catch (IllegalArgumentException e){
-            assertEquals("Cannot add up non numeric objects.", e.getMessage());
+        catch (ClassCastException e){
+            assertEquals("Format error, List type structure required.", e.getMessage());
         }
     }
 
     @Test
-    public void testDecrementBooleanOk() {
-        String base = "{\"test\":true}";
-        String sentence = "FIELD test DECREMENT false";
+    public void testDecrementListOk() {
+        String base = "{\"test\":\"[1,2,3]\"}";
+        String sentence = "FIELD test DECREMENT LIST 4 5 6 CLOSE";
 
         SequenceCompiler compiler = new SequenceCompiler(base, sentence);
         try {
             compiler.compile();
             assertTrue("Exception expected but not thrown", false);
         }
-        catch (IllegalArgumentException e){
-            assertEquals("Cannot add up non numeric objects.", e.getMessage());
+        catch (ClassCastException e){
+            assertEquals("Format error, List type structure required.", e.getMessage());
         }
     }
 

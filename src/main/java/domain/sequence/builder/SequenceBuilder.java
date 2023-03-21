@@ -137,6 +137,11 @@ public class SequenceBuilder {
             difference = Math.abs(doubleOld - doubleNew);
             multiplier = doubleNew > doubleOld ? -1 : 1;
 
+        } else if (objectNew instanceof Long){
+            Long longOld = objectOld == null ? 0 : ValueParser.parseLong(objectOld);
+            Long longNew = ValueParser.parseLong(objectNew);
+            difference = Math.abs(longOld - longNew);
+            multiplier = longNew > longOld ? -1 : 1;
         } else {
             Integer integerOld = objectOld == null ? 0 : ValueParser.parseInteger(objectOld);
             Integer integerNew = ValueParser.parseInteger(objectNew);
