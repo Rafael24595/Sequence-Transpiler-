@@ -7,12 +7,10 @@ public class Main {
 
     public static void main(String[] args) {
         SequenceCompiler compiler = new SequenceCompiler(KInput.BASE_TEST_1, KInput.SEQUENCE_TEST_1);
-        String compileResult = compiler.compile();
-        System.out.println(compileResult);
+        compiler.compile();
 
         SequenceDecompiler decompiler = new SequenceDecompiler(KInput.BASE_TEST_2, KInput.UPDATE_TEST_1);
-        String decompileResult = decompiler.decompile();
-        System.out.println(decompileResult);
+        decompiler.decompile();
 
         System.out.println("Close app...");
     }

@@ -31,7 +31,7 @@ public class SequenceDecompiler {
         Map<String, Object> m2 = this.inputInterpreter.read(this.update);
 
         SequenceBuilder sb = new SequenceBuilder(m1, m2);
-        sb.enableFormat();
+        sb.setFormat(this.format);
         String sequence = sb.build();
 
         return this.outputInterpreter.write(sequence);

@@ -44,43 +44,37 @@ public class TestSequenceCompilerObject {
     public void testMutateObjectKo() {
         String base = "{\"test\":\"{\\\"test_str\\\":\\\"str\\\",\\\"test_int\\\":1,\\\"test_bol\\\":true}\"}";
         String sentence = "FIELD test MUTATE OBJECT FIELD test_str_aux MUTATE \"str_aux\" FIELD test_int_aux MUTATE 2 FIELD test_bol_aux MUTATE false CLOSE";
-        SequenceCompiler compiler = new SequenceCompiler(base, sentence);
-        try {
-            compiler.compile();
-            assertTrue("Exception expected but not thrown", false);
-        }
-        catch (ClassCastException e){
-            assertEquals("Format error, Map type structure required.", e.getMessage());
-        }
+        String expected = "Format error, Map type structure required.";
+
+        assertException(base, sentence, expected);
     }
 
     @Test
     public void testIncrementObjectOk() {
         String base = "{\"test\":\"{\\\"test_str\\\":\\\"str\\\",\\\"test_int\\\":1,\\\"test_bol\\\":true}\"}";
         String sentence = "FIELD test MUTATE OBJECT FIELD test_str_aux MUTATE \"str_aux\" FIELD test_int_aux MUTATE 2 FIELD test_bol_aux MUTATE false CLOSE";
+        String expected = "Format error, Map type structure required.";
 
-        SequenceCompiler compiler = new SequenceCompiler(base, sentence);
-        try {
-            compiler.compile();
-            assertTrue("Exception expected but not thrown", false);
-        }
-        catch (ClassCastException e){
-            assertEquals("Format error, Map type structure required.", e.getMessage());
-        }
+        assertException(base, sentence, expected);
     }
 
     @Test
     public void testDecrementObjectOk() {
         String base = "{\"test\":\"{\\\"test_str\\\":\\\"str\\\",\\\"test_int\\\":1,\\\"test_bol\\\":true}\"}";
         String sentence = "FIELD test MUTATE OBJECT FIELD test_str_aux MUTATE \"str_aux\" FIELD test_int_aux MUTATE 2 FIELD test_bol_aux MUTATE false CLOSE";
+        String expected = "Format error, Map type structure required.";
 
+        assertException(base, sentence, expected);
+    }
+
+    private void assertException(String base, String sentence, String expected) {
         SequenceCompiler compiler = new SequenceCompiler(base, sentence);
         try {
             compiler.compile();
             assertTrue("Exception expected but not thrown", false);
         }
         catch (ClassCastException e){
-            assertEquals("Format error, Map type structure required.", e.getMessage());
+            assertEquals(expected, e.getMessage());
         }
     }
 

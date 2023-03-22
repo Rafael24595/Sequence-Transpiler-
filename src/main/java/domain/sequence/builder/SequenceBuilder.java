@@ -33,7 +33,7 @@ public class SequenceBuilder {
         this.format = false;
     }
 
-    private void setFormat(boolean format) {
+    public void setFormat(boolean format) {
         this.format = format;
     }
 
@@ -53,7 +53,7 @@ public class SequenceBuilder {
             sb.append(sequence.build());
         }
 
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     private void persist(SequenceStructure sequence) {

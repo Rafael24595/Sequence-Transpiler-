@@ -26,15 +26,9 @@ public class TestSequenceCompiler {
     public void testMutateKo() {
         String base = "{\"test_aux\":\"1\"}";
         String sentence = "FIELD test MUTATE \"1\"";
+        String expected = "Field does not exists.";
 
-        SequenceCompiler compiler = new SequenceCompiler(base, sentence);
-        try {
-            compiler.compile();
-            assertTrue("Exception expected but not thrown", false);
-        }
-        catch (IllegalArgumentException e){
-            assertEquals("Field does not exists.", e.getMessage());
-        }
+        assertException(base, sentence, expected);
     }
 
     @Test
@@ -52,14 +46,19 @@ public class TestSequenceCompiler {
     public void testDeleteKo() {
         String base = "{\"test_aux\":\"1\"}";
         String sentence = "FIELD test DELETE";
+        String expected = "Field does not exists.";
 
+        assertException(base, sentence, expected);
+    }
+
+    private void assertException(String base, String sentence, String expected) {
         SequenceCompiler compiler = new SequenceCompiler(base, sentence);
         try {
             compiler.compile();
             assertTrue("Exception expected but not thrown", false);
         }
         catch (IllegalArgumentException e){
-            assertEquals("Field does not exists.", e.getMessage());
+            assertEquals(expected, e.getMessage());
         }
     }
 

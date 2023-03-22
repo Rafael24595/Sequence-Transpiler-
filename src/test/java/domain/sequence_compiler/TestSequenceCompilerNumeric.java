@@ -44,14 +44,9 @@ public class TestSequenceCompilerNumeric {
     public void testMutateNumericKo() {
         String base = "{\"test\":\"1\"}";
         String sentence = "FIELD test MUTATE 1";
-        SequenceCompiler compiler = new SequenceCompiler(base, sentence);
-        try {
-            compiler.compile();
-            assertTrue("Exception expected but not thrown", false);
-        }
-        catch (IllegalArgumentException e){
-            assertEquals("Cannot merge the fields, both must be Numeric type objects", e.getMessage());
-        }
+        String expected = "Cannot merge the fields, both must be Numeric type objects";
+
+        assertException(base, sentence, expected);
     }
 
     @Test
@@ -106,6 +101,17 @@ public class TestSequenceCompilerNumeric {
         String expected = "{\"test\":2.0}";
 
         assertCompile(base, sentence, expected);
+    }
+
+    private void assertException(String base, String sentence, String expected) {
+        SequenceCompiler compiler = new SequenceCompiler(base, sentence);
+        try {
+            compiler.compile();
+            assertTrue("Exception expected but not thrown", false);
+        }
+        catch (IllegalArgumentException e){
+            assertEquals(expected, e.getMessage());
+        }
     }
 
     private void assertCompile(String base, String sentence, String expected){

@@ -2,8 +2,8 @@ package domain;
 
 import domain.sequence.Sequence;
 import domain.sequence.sentence.sentence.SentenceMap;
+import infraestructure.ConsoleGsonOutputInterpreter;
 import infraestructure.GsonInputInterpreter;
-import infraestructure.GsonOutputInterpreter;
 import tools.Sanitizer;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ public class SequenceCompiler {
         this.base = base;
         this.sentence = sentence;
         this.inputInterpreter = new GsonInputInterpreter();
-        this.outputInterpreter = new GsonOutputInterpreter();
+        this.outputInterpreter = new ConsoleGsonOutputInterpreter();
     }
 
     public String compile() {

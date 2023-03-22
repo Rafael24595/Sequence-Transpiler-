@@ -44,43 +44,37 @@ public class TestSequenceCompilerString {
     public void testMutateStringKo() {
         String base = "{\"test\":true}";
         String sentence = "FIELD test MUTATE \"string test\"";
-        SequenceCompiler compiler = new SequenceCompiler(base, sentence);
-        try {
-            compiler.compile();
-            assertTrue("Exception expected but not thrown", false);
-        }
-        catch (IllegalArgumentException e){
-            assertEquals("Cannot merge the fields, both must be String type objects", e.getMessage());
-        }
+        String expected = "Cannot merge the fields, both must be String type objects";
+
+        assertException(base, sentence, expected);
     }
 
     @Test
     public void testIncrementStringOk() {
         String base = "{\"test\":\"string test\"}";
         String sentence = "FIELD test INCREMENT \"1\"";
+        String expected = "Cannot add up non numeric objects.";
 
-        SequenceCompiler compiler = new SequenceCompiler(base, sentence);
-        try {
-            compiler.compile();
-            assertTrue("Exception expected but not thrown", false);
-        }
-        catch (IllegalArgumentException e){
-            assertEquals("Cannot add up non numeric objects.", e.getMessage());
-        }
+        assertException(base, sentence, expected);
     }
 
     @Test
     public void testDecrementStringOk() {
         String base = "{\"test\":\"string test\"}";
         String sentence = "FIELD test DECREMENT \"1\"";
+        String expected = "Cannot add up non numeric objects.";
 
+        assertException(base, sentence, expected);
+    }
+
+    private void assertException(String base, String sentence, String expected) {
         SequenceCompiler compiler = new SequenceCompiler(base, sentence);
         try {
             compiler.compile();
             assertTrue("Exception expected but not thrown", false);
         }
         catch (IllegalArgumentException e){
-            assertEquals("Cannot add up non numeric objects.", e.getMessage());
+            assertEquals(expected, e.getMessage());
         }
     }
 

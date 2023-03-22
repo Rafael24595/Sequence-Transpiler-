@@ -44,43 +44,37 @@ public class TestSequenceCompilerList {
     public void testMutateListKo() {
         String base = "{\"test\":\"[1,2,3]\"}";
         String sentence = "FIELD test MUTATE LIST 4 5 6 CLOSE";
-        SequenceCompiler compiler = new SequenceCompiler(base, sentence);
-        try {
-            compiler.compile();
-            assertTrue("Exception expected but not thrown", false);
-        }
-        catch (ClassCastException e){
-            assertEquals("Format error, List type structure required.", e.getMessage());
-        }
+        String expected = "Format error, List type structure required.";
+
+        assertException(base, sentence, expected);
     }
 
     @Test
     public void testIncrementListOk() {
         String base = "{\"test\":\"[1,2,3]\"}";
         String sentence = "FIELD test INCREMENT LIST 4 5 6 CLOSE";
+        String expected = "Format error, List type structure required.";
 
-        SequenceCompiler compiler = new SequenceCompiler(base, sentence);
-        try {
-            compiler.compile();
-            assertTrue("Exception expected but not thrown", false);
-        }
-        catch (ClassCastException e){
-            assertEquals("Format error, List type structure required.", e.getMessage());
-        }
+        assertException(base, sentence, expected);
     }
 
     @Test
     public void testDecrementListOk() {
         String base = "{\"test\":\"[1,2,3]\"}";
         String sentence = "FIELD test DECREMENT LIST 4 5 6 CLOSE";
+        String expected = "Format error, List type structure required.";
 
+        assertException(base, sentence, expected);
+    }
+
+    private void assertException(String base, String sentence, String expected) {
         SequenceCompiler compiler = new SequenceCompiler(base, sentence);
         try {
             compiler.compile();
             assertTrue("Exception expected but not thrown", false);
         }
         catch (ClassCastException e){
-            assertEquals("Format error, List type structure required.", e.getMessage());
+            assertEquals(expected, e.getMessage());
         }
     }
 
