@@ -25,7 +25,7 @@ public class TestSequenceCompilerList {
     @Test
     public void testAsListOk() {
         String base = "{\"test\":[1,2,3]}";
-        String sentence = "FIELD test AS LIST 4 5 6 CLOSE";
+        String sentence = "FIELD $test AS LIST 4 5 6 CLOSE";
         String expected = "{\"test\":[4,5,6]}";
 
         assertCompile(base, sentence, expected);
@@ -34,7 +34,7 @@ public class TestSequenceCompilerList {
     @Test
     public void testMutateListOk() {
         String base = "{\"test\":[1,2,3]}";
-        String sentence = "FIELD test MUTATE LIST 4 5 6 CLOSE";
+        String sentence = "FIELD $test MUTATE LIST 4 5 6 CLOSE";
         String expected = "{\"test\":[1,2,3,4,5,6]}";
 
         assertCompile(base, sentence, expected);
@@ -43,7 +43,7 @@ public class TestSequenceCompilerList {
     @Test
     public void testMutateListKo() {
         String base = "{\"test\":\"[1,2,3]\"}";
-        String sentence = "FIELD test MUTATE LIST 4 5 6 CLOSE";
+        String sentence = "FIELD $test MUTATE LIST 4 5 6 CLOSE";
         String expected = "Format error, List type structure required.";
 
         assertException(base, sentence, expected);
@@ -52,7 +52,7 @@ public class TestSequenceCompilerList {
     @Test
     public void testIncrementListOk() {
         String base = "{\"test\":\"[1,2,3]\"}";
-        String sentence = "FIELD test INCREMENT LIST 4 5 6 CLOSE";
+        String sentence = "FIELD $test INCREMENT LIST 4 5 6 CLOSE";
         String expected = "Format error, List type structure required.";
 
         assertException(base, sentence, expected);
@@ -61,7 +61,7 @@ public class TestSequenceCompilerList {
     @Test
     public void testDecrementListOk() {
         String base = "{\"test\":\"[1,2,3]\"}";
-        String sentence = "FIELD test DECREMENT LIST 4 5 6 CLOSE";
+        String sentence = "FIELD $test DECREMENT LIST 4 5 6 CLOSE";
         String expected = "Format error, List type structure required.";
 
         assertException(base, sentence, expected);

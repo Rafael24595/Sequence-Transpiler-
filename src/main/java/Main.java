@@ -1,7 +1,7 @@
 
 import domain.SequenceCompiler;
 import domain.SequenceDecompiler;
-import test.KInput;
+import resources.KInput;
 
 public class Main {
 

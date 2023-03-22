@@ -174,4 +174,11 @@ public class ValueParser {
         return new ArrayList<>(hash);
     }
 
+    public static List<Object> listUniqueValues(List<Object> list1, List<Object> list2){
+        ArrayList<Object> uniques = new ArrayList<>(list1);
+        uniques.removeAll(list2);
+
+        return uniques;
+    }
+
 }

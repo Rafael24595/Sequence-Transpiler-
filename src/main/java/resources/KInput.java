@@ -1,4 +1,4 @@
-package test;
+package resources;
 
 public class KInput {
     
@@ -32,18 +32,18 @@ public class KInput {
 
     public static final String BASE_TEST_1 = """
             {
-                "$object_data_1":{
-                  "$integer": 1,
-                  "$string": "empty 1",
-                  "$boolean": true,
-                  "$string_new": "str 1"
+                "object_data_1":{
+                  "integer": 1,
+                  "string": "empty 1",
+                  "boolean": true,
+                  "string_new": "str 1"
                 },
-                "$list_data": [0],
-                "$erase": "this_field_out",
+                "list_data": [0],
+                "erase": "this_field_out",
                 "object_data_complex_1":{
-                  "$integer": 3,
+                  "integer": 3,
                   "sub_object_data_complex_1": {
-                      "$string": "str 4"
+                      "string": "str 4"
                   }
                 }
               }

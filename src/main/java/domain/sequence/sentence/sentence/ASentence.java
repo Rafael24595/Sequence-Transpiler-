@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import domain.sequence.Sequence;
 import domain.sequence.sentence.SentenceMixer;
+import tools.Sanitizer;
 
 public abstract class ASentence<T> implements ISentence<T> {
 
@@ -49,7 +50,8 @@ public abstract class ASentence<T> implements ISentence<T> {
 
         if(!isRawData(command)){
             int keyPointer = pointer + NAME_POINTER_CORRECTION;
-            return getCommandField(input, keyPointer);
+            String key = getCommandField(input, keyPointer);
+            return Sanitizer.cleanKeyPrefix(key);
         }
 
         return "";

@@ -1,5 +1,6 @@
 package domain.sequence.builder;
 
+import tools.Sanitizer;
 import tools.ValueParser;
 
 import java.util.*;
@@ -53,7 +54,7 @@ public class SequenceBuilder {
             sb.append(sequence.build());
         }
 
-        return sb.toString().trim();
+        return Sanitizer.cleanBlankEndChar(sb.toString());
     }
 
     private void persist(SequenceStructure sequence) {
@@ -92,7 +93,7 @@ public class SequenceBuilder {
     }
 
     private SequenceStructure buildList(SequenceStructure sequence, Object objectOld, Object objectNew) {
-        List<Object> list = joinListValues(sequence, objectOld, objectNew);
+        List<Object> list = listUniqueValues(sequence, objectOld, objectNew);
         List<String> values = new ArrayList<>();
 
         for (Object value: list) {
@@ -153,11 +154,11 @@ public class SequenceBuilder {
         return sequence;
     }
 
-    private List<Object> joinListValues(SequenceStructure sequence, Object objectOld, Object objectNew){
+    private List<Object> listUniqueValues(SequenceStructure sequence, Object objectOld, Object objectNew){
         List<Object> listOld = sequence.isMutate() ? (List<Object>) objectOld: new ArrayList<>();
         List<Object> listNew = (List<Object>) objectNew;
 
-        return ValueParser.joinListValues(listOld, listNew);
+        return ValueParser.listUniqueValues(listNew, listOld);
     }
 
 }

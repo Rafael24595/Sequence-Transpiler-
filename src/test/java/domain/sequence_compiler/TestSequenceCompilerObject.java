@@ -25,7 +25,7 @@ public class TestSequenceCompilerObject {
     @Test
     public void testAsObjectOk() {
         String base = "{\"test\":{\"test_str\":\"str\",\"test_int\":1,\"test_bol\":true}}";
-        String sentence = "FIELD test AS OBJECT FIELD test_str_aux AS \"str_aux\" FIELD test_int_aux AS 2 FIELD test_bol_aux AS false CLOSE";
+        String sentence = "FIELD $test AS OBJECT FIELD $test_str_aux AS \"str_aux\" FIELD $test_int_aux AS 2 FIELD $test_bol_aux AS false CLOSE";
         String expected = "{\"test\":{\"test_str_aux\":\"str_aux\",\"test_bol_aux\":false,\"test_int_aux\":2}}";
 
         assertCompile(base, sentence, expected);
@@ -34,7 +34,7 @@ public class TestSequenceCompilerObject {
     @Test
     public void testMutateObjectOk() {
         String base = "{\"test\":{\"test_str\":\"str\",\"test_int\":1}}";
-        String sentence = "FIELD test MUTATE OBJECT FIELD test_str MUTATE \"str_aux\" FIELD test_int MUTATE 2 FIELD test_bol AS true CLOSE";
+        String sentence = "FIELD $test MUTATE OBJECT FIELD $test_str MUTATE \"str_aux\" FIELD $test_int MUTATE 2 FIELD $test_bol AS true CLOSE";
         String expected = "{\"test\":{\"test_str\":\"str_aux\",\"test_int\":2,\"test_bol\":true}}";
 
         assertCompile(base, sentence, expected);
@@ -43,7 +43,7 @@ public class TestSequenceCompilerObject {
     @Test
     public void testMutateObjectKo() {
         String base = "{\"test\":\"{\\\"test_str\\\":\\\"str\\\",\\\"test_int\\\":1,\\\"test_bol\\\":true}\"}";
-        String sentence = "FIELD test MUTATE OBJECT FIELD test_str_aux MUTATE \"str_aux\" FIELD test_int_aux MUTATE 2 FIELD test_bol_aux MUTATE false CLOSE";
+        String sentence = "FIELD $test MUTATE OBJECT FIELD $test_str_aux MUTATE \"str_aux\" FIELD $test_int_aux MUTATE 2 FIELD $test_bol_aux MUTATE false CLOSE";
         String expected = "Format error, Map type structure required.";
 
         assertException(base, sentence, expected);
@@ -52,7 +52,7 @@ public class TestSequenceCompilerObject {
     @Test
     public void testIncrementObjectOk() {
         String base = "{\"test\":\"{\\\"test_str\\\":\\\"str\\\",\\\"test_int\\\":1,\\\"test_bol\\\":true}\"}";
-        String sentence = "FIELD test MUTATE OBJECT FIELD test_str_aux MUTATE \"str_aux\" FIELD test_int_aux MUTATE 2 FIELD test_bol_aux MUTATE false CLOSE";
+        String sentence = "FIELD $test MUTATE OBJECT FIELD $test_str_aux MUTATE \"str_aux\" FIELD $test_int_aux MUTATE 2 FIELD $test_bol_aux MUTATE false CLOSE";
         String expected = "Format error, Map type structure required.";
 
         assertException(base, sentence, expected);
@@ -61,7 +61,7 @@ public class TestSequenceCompilerObject {
     @Test
     public void testDecrementObjectOk() {
         String base = "{\"test\":\"{\\\"test_str\\\":\\\"str\\\",\\\"test_int\\\":1,\\\"test_bol\\\":true}\"}";
-        String sentence = "FIELD test MUTATE OBJECT FIELD test_str_aux MUTATE \"str_aux\" FIELD test_int_aux MUTATE 2 FIELD test_bol_aux MUTATE false CLOSE";
+        String sentence = "FIELD $test MUTATE OBJECT FIELD $test_str_aux MUTATE \"str_aux\" FIELD $test_int_aux MUTATE 2 FIELD $test_bol_aux MUTATE false CLOSE";
         String expected = "Format error, Map type structure required.";
 
         assertException(base, sentence, expected);

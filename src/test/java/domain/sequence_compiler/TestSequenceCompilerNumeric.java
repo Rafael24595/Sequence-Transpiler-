@@ -25,7 +25,7 @@ public class TestSequenceCompilerNumeric {
     @Test
     public void testAsNumericOk() {
         String base = "{\"test\":1}";
-        String sentence = "FIELD test AS 2";
+        String sentence = "FIELD $test AS 2";
         String expected = "{\"test\":2}";
 
         assertCompile(base, sentence, expected);
@@ -34,7 +34,7 @@ public class TestSequenceCompilerNumeric {
     @Test
     public void testMutateNumericOk() {
         String base = "{\"test\":1}";
-        String sentence = "FIELD test MUTATE 2";
+        String sentence = "FIELD $test MUTATE 2";
         String expected = "{\"test\":2}";
 
         assertCompile(base, sentence, expected);
@@ -43,7 +43,7 @@ public class TestSequenceCompilerNumeric {
     @Test
     public void testMutateNumericKo() {
         String base = "{\"test\":\"1\"}";
-        String sentence = "FIELD test MUTATE 1";
+        String sentence = "FIELD $test MUTATE 1";
         String expected = "Cannot merge the fields, both must be Numeric type objects";
 
         assertException(base, sentence, expected);
@@ -52,7 +52,7 @@ public class TestSequenceCompilerNumeric {
     @Test
     public void testIncrementNumericOk_1() {
         String base = "{\"test\":1}";
-        String sentence = "FIELD test INCREMENT 1";
+        String sentence = "FIELD $test INCREMENT 1";
         String expected = "{\"test\":2}";
 
         assertCompile(base, sentence, expected);
@@ -61,7 +61,7 @@ public class TestSequenceCompilerNumeric {
     @Test
     public void testIncrementNumericOk_2() {
         String base = "{\"test\":1.0}";
-        String sentence = "FIELD test INCREMENT 1";
+        String sentence = "FIELD $test INCREMENT 1";
         String expected = "{\"test\":2.0}";
 
         assertCompile(base, sentence, expected);
@@ -70,7 +70,7 @@ public class TestSequenceCompilerNumeric {
     @Test
     public void testIncrementNumericOk_3() {
         String base = "{\"test\":1}";
-        String sentence = "FIELD test INCREMENT 1.0";
+        String sentence = "FIELD $test INCREMENT 1.0";
         String expected = "{\"test\":2.0}";
 
         assertCompile(base, sentence, expected);
@@ -79,7 +79,7 @@ public class TestSequenceCompilerNumeric {
     @Test
     public void testDecrementNumericOk_1() {
         String base = "{\"test\":3}";
-        String sentence = "FIELD test DECREMENT 1";
+        String sentence = "FIELD $test DECREMENT 1";
         String expected = "{\"test\":2}";
 
         assertCompile(base, sentence, expected);
@@ -88,7 +88,7 @@ public class TestSequenceCompilerNumeric {
     @Test
     public void testDecrementNumericOk_2() {
         String base = "{\"test\":3.0}";
-        String sentence = "FIELD test DECREMENT 1";
+        String sentence = "FIELD $test DECREMENT 1";
         String expected = "{\"test\":2.0}";
 
         assertCompile(base, sentence, expected);
@@ -97,7 +97,7 @@ public class TestSequenceCompilerNumeric {
     @Test
     public void testDecrementNumericOk_3() {
         String base = "{\"test\":3}";
-        String sentence = "FIELD test DECREMENT 1.0";
+        String sentence = "FIELD $test DECREMENT 1.0";
         String expected = "{\"test\":2.0}";
 
         assertCompile(base, sentence, expected);

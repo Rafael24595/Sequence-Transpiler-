@@ -25,7 +25,7 @@ public class TestSequenceCompiler {
     @Test
     public void testMutateKo() {
         String base = "{\"test_aux\":\"1\"}";
-        String sentence = "FIELD test MUTATE \"1\"";
+        String sentence = "FIELD $test MUTATE \"1\"";
         String expected = "Field does not exists.";
 
         assertException(base, sentence, expected);
@@ -34,7 +34,7 @@ public class TestSequenceCompiler {
     @Test
     public void testDeleteOk() {
         String base = "{\"test\":\"1\"}";
-        String sentence = "FIELD test DELETE";
+        String sentence = "FIELD $test DELETE";
         String expected = "{}";
 
         SequenceCompiler compiler = new SequenceCompiler(base, sentence);
@@ -45,7 +45,7 @@ public class TestSequenceCompiler {
     @Test
     public void testDeleteKo() {
         String base = "{\"test_aux\":\"1\"}";
-        String sentence = "FIELD test DELETE";
+        String sentence = "FIELD $test DELETE";
         String expected = "Field does not exists.";
 
         assertException(base, sentence, expected);

@@ -35,4 +35,15 @@ public class Sanitizer {
         return input.replaceAll(SEPARATOR_AUX, SEPARATOR);
     }
 
+    public static String cleanKeyPrefix(String key) {
+        return key.replace(PREFIX_KEY, "");
+    }
+
+    public static String cleanBlankEndChar(String sentence) {
+        String lastChar = sentence.substring(sentence.length() - 1);
+        if(lastChar.equals("\s"))
+            return sentence.substring(0, sentence.length() - 1);
+        return  sentence;
+    }
+
 }

@@ -25,7 +25,7 @@ public class TestSequenceCompilerBoolean {
     @Test
     public void testAsBooleanOk() {
         String base = "{\"test\":true}";
-        String sentence = "FIELD test AS false";
+        String sentence = "FIELD $test AS false";
         String expected = "{\"test\":false}";
 
         assertCompile(base, sentence, expected);
@@ -34,7 +34,7 @@ public class TestSequenceCompilerBoolean {
     @Test
     public void testMutateBooleanOk() {
         String base = "{\"test\":true}";
-        String sentence = "FIELD test MUTATE false";
+        String sentence = "FIELD $test MUTATE false";
         String expected = "{\"test\":false}";
 
         assertCompile(base, sentence, expected);
@@ -43,7 +43,7 @@ public class TestSequenceCompilerBoolean {
     @Test
     public void testMutateBooleanKo() {
         String base = "{\"test\":\"true\"}";
-        String sentence = "FIELD test MUTATE false";
+        String sentence = "FIELD $test MUTATE false";
         String expected = "Cannot merge the fields, both must be Boolean type objects";
 
         assertException(base, sentence, expected);
@@ -52,7 +52,7 @@ public class TestSequenceCompilerBoolean {
     @Test
     public void testIncrementBooleanOk() {
         String base = "{\"test\":true}";
-        String sentence = "FIELD test INCREMENT false";
+        String sentence = "FIELD $test INCREMENT false";
         String expected = "Cannot add up non numeric objects.";
 
         assertException(base, sentence, expected);
@@ -61,7 +61,7 @@ public class TestSequenceCompilerBoolean {
     @Test
     public void testDecrementBooleanOk() {
         String base = "{\"test\":true}";
-        String sentence = "FIELD test DECREMENT false";
+        String sentence = "FIELD $test DECREMENT false";
         String expected = "Cannot add up non numeric objects.";
 
         assertException(base, sentence, expected);

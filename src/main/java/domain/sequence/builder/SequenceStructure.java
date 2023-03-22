@@ -126,7 +126,7 @@ public class SequenceStructure {
         if(!field.isEmpty())
             sb.append("\s");
         if(!name.isEmpty())
-            sb.append("$");
+            sb.append(PREFIX_KEY);
         sb.append(name);
         if(!name.isEmpty())
             sb.append("\s");

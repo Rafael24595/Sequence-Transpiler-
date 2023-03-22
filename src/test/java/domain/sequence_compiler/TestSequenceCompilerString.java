@@ -25,7 +25,7 @@ public class TestSequenceCompilerString {
     @Test
     public void testAsStringOk() {
         String base = "{\"test\":\"string test\"}";
-        String sentence = "FIELD test AS \"string test as\"";
+        String sentence = "FIELD $test AS \"string test as\"";
         String expected = "{\"test\":\"string test as\"}";
 
         assertCompile(base, sentence, expected);
@@ -34,7 +34,7 @@ public class TestSequenceCompilerString {
     @Test
     public void testMutateStringOk() {
         String base = "{\"test\":\"string test\"}";
-        String sentence = "FIELD test MUTATE \"string test mutate\"";
+        String sentence = "FIELD $test MUTATE \"string test mutate\"";
         String expected = "{\"test\":\"string test mutate\"}";
 
         assertCompile(base, sentence, expected);
@@ -43,7 +43,7 @@ public class TestSequenceCompilerString {
     @Test
     public void testMutateStringKo() {
         String base = "{\"test\":true}";
-        String sentence = "FIELD test MUTATE \"string test\"";
+        String sentence = "FIELD $test MUTATE \"string test\"";
         String expected = "Cannot merge the fields, both must be String type objects";
 
         assertException(base, sentence, expected);
@@ -52,7 +52,7 @@ public class TestSequenceCompilerString {
     @Test
     public void testIncrementStringOk() {
         String base = "{\"test\":\"string test\"}";
-        String sentence = "FIELD test INCREMENT \"1\"";
+        String sentence = "FIELD $test INCREMENT \"1\"";
         String expected = "Cannot add up non numeric objects.";
 
         assertException(base, sentence, expected);
@@ -61,7 +61,7 @@ public class TestSequenceCompilerString {
     @Test
     public void testDecrementStringOk() {
         String base = "{\"test\":\"string test\"}";
-        String sentence = "FIELD test DECREMENT \"1\"";
+        String sentence = "FIELD $test DECREMENT \"1\"";
         String expected = "Cannot add up non numeric objects.";
 
         assertException(base, sentence, expected);

@@ -5,6 +5,7 @@ public class KSentence {
     private KSentence(){
     }
 
+    public static final String PREFIX_KEY = "$";
     public static final String SEPARATOR = "\s";
 
     public static final String FIELD = "FIELD";
